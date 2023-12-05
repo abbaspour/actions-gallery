@@ -3,14 +3,14 @@
  *
  * Author: Vikas Jayaram <vikas@okta.com>
  * Date: 2023-11-24
- * License: MIT (https://github.com/auth0/actions-galleryh/blob/main/LICENSE)
+ * License: MIT (https://github.com/auth0/actions-gallery/blob/main/LICENSE)
  *
 * @param {Event} event - Details about client credentials grant request.
 * @param {CredentialsExchangeAPI} api - Interface whose methods can be used to change the behavior of client credentials grant.
 */
 const AWS = require('aws-sdk');
 const merge = require('lodash.merge');
-const REQUEST_HISTORY_TABLE_NAME = '<DYNAMO_DB_TABLE_NAME_FOR_RATE_LIMITS>'
+const REQUEST_HISTORY_TABLE_NAME = '<DYNAMO_DB_TABLE_NAME_FOR_RATE_LIMITS>';
 const AWS_REGION = '<AWS_REGION>';
 const MAX_REQUEST_HISTORY_SIZE = 100;
 
@@ -22,7 +22,7 @@ exports.onExecuteCredentialsExchange = async (event, api) => {
         timePeriod: 1000 * 60 * 60 * 24 // 24 hours
     };
     if (client.metadata && client.metadata.rateLimits) {
-        merge(rateLimits, JSON.parse(client.metadata.rateLimits))
+        merge(rateLimits, JSON.parse(client.metadata.rateLimits));
     }
     if (rateLimits.enabled) {
         AWS.config.update({
@@ -59,30 +59,30 @@ const getRequestHistory = async (clientId, dynamo) => {
         AttributesToGet: ['requestHistory']
     };
     return dynamo.get(params).promise()
-        .then(data => data.Item && data.Item.requestHistory ? data.Item.requestHistory : [])
+        .then(data => (data.Item && data.Item.requestHistory ? data.Item.requestHistory : []))
         .catch(error => {
-            console.warn(error)
+            console.warn(error);
             return [];
         });
-}
+};
 
 const isRateLimited = (requestHistoryWithinTimePeriod, rateLimits) => {
     let isRateLimited = false;
     requestHistoryWithinTimePeriod.push(Date.now());
     console.log(requestHistoryWithinTimePeriod, rateLimits);
-    const requestsWithinTimePeriod = requestHistoryWithinTimePeriod.length
+    const requestsWithinTimePeriod = requestHistoryWithinTimePeriod.length;
     if (requestsWithinTimePeriod > rateLimits.rateLimitPerTimePeriod) {
         isRateLimited = true;
         //prevent a runaway client from killing the performance
         if (requestsWithinTimePeriod > MAX_REQUEST_HISTORY_SIZE) {
-            requestHistoryWithinTimePeriod = requestHistoryWithinTimePeriod.slice(requestsWithinTimePeriod - MAX_REQUEST_HISTORY_SIZE)
+            requestHistoryWithinTimePeriod = requestHistoryWithinTimePeriod.slice(requestsWithinTimePeriod - MAX_REQUEST_HISTORY_SIZE);
         }
     }
     return {
         isRateLimited,
         requestHistory: requestHistoryWithinTimePeriod
     };
-}
+};
 
 
 const updateRequestHistory = async (clientId, clientState, dynamo) => {
