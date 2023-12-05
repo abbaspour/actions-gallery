@@ -1,13 +1,17 @@
 /**
- * Author: Amin Abbaspour <amin@okta.com>
+ * Author: Amin Abbaspour
  * Date: 2023-11-22
- * License: MIT (https://github.com/auth0/actions-galleryh/blob/main/LICENSE)
+ * License: MIT (https://github.com/auth0/actions-gallery/blob/main/LICENSE)
  */
 
-const {expect, test} = require('@jest/globals');
+const {expect, test, beforeEach} = require('@jest/globals');
 const {jest: _jest} = require('@jest/globals');
 
 const [clientId, clientSecret, domain] = ['xxx', 'xxx', 'xxx.auth0.com'];
+
+beforeEach(() => {
+    _jest.resetModules();
+});
 
 const AuthenticationClient = _jest.fn().mockImplementation((domain, clientId, clientSecret) => {
     return {
@@ -17,6 +21,30 @@ const AuthenticationClient = _jest.fn().mockImplementation((domain, clientId, cl
             })
         }
     };
+});
+
+test('no-link-unverified-email', async () => {
+    const mockApi = {
+        nope: _jest.fn()
+    };
+
+    const mockEvent = {
+        user: {
+            email: 'a.abbaspour+01@gmail.com',
+            user_id: 'auth0|60a47ce4689a830068e26ece',
+            email_verified: false,
+            identities: [],
+            app_metadata: {'customer_id': 'a'}
+        },
+        secrets: {clientId, clientSecret, domain}
+    };
+
+    const {onExecutePostLogin} = require('./account-linking');
+    await onExecutePostLogin(mockEvent, mockApi);
+
+    expect(mockApi.nope).toBeCalledWith(
+        'email not verified'
+    );
 });
 
 test('linking-both-have-customer-id', async () => {
@@ -79,7 +107,7 @@ test('linking-both-have-customer-id', async () => {
         }
     };
 
-    _jest.resetModules();
+    //_jest.resetModules();
     _jest.mock('auth0', () => {
         return {ManagementClient, AuthenticationClient};
     });
@@ -135,7 +163,7 @@ test('linking-only-primary-has-customer-id', async () => {
         };
     });
 
-    _jest.resetModules();
+    //_jest.resetModules();
     _jest.mock('auth0', () => {
         return {ManagementClient, AuthenticationClient};
     });

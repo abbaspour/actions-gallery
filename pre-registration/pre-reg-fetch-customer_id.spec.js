@@ -1,8 +1,15 @@
+/**
+ * Author: Amin Abbaspour
+ * Date: 2023-11-22
+ * License: MIT (https://github.com/auth0/actions-gallery/blob/main/LICENSE)
+ */
+
 const {expect, test} = require('@jest/globals');
 const {jest: _jest} = require('@jest/globals');
 
 const {onExecutePreUserRegistration} = require('./pre-reg-fetch-customer_id');
 
+// TODO: mock axios
 test('pre-reg-sunny', async () => {
     const mockFunction = _jest.fn();
     const mockEvent = {user: {email: 'test@example.com'}};

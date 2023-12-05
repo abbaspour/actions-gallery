@@ -1,13 +1,16 @@
 /**
  * Fetch CRM id post Login
  *
- * Author: Amin Abbaspour <amin@okta.com>
+ * Author: Amin Abbaspour
  * Date: 2023-11-22
- * License: MIT (https://github.com/auth0/actions-galleryh/blob/main/LICENSE)
+ * License: MIT (https://github.com/auth0/actions-gallery/blob/main/LICENSE)
  *
  * @param event https://auth0.com/docs/customize/actions/flows-and-triggers/login-flow/event-object
  * @param api https://auth0.com/docs/customize/actions/flows-and-triggers/login-flow/api-object
  * @returns {Promise<void>}
+ *
+ * NPM Dependencies:
+ *  - axios
  */
 exports.onExecutePostLogin = async (event, api) => {
 

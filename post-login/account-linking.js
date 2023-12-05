@@ -1,13 +1,16 @@
 /**
  * Link and merge customer_id
  *
- * Author: Amin Abbaspour <amin@okta.com>
+ * Author: Amin Abbaspour
  * Date: 2023-11-22
- * License: MIT (https://github.com/auth0/actions-galleryh/blob/main/LICENSE)
+ * License: MIT (https://github.com/auth0/actions-gallery/blob/main/LICENSE)
  *
  * @param event https://auth0.com/docs/customize/actions/flows-and-triggers/login-flow/event-object
  * @param api https://auth0.com/docs/customize/actions/flows-and-triggers/login-flow/api-object
  * @returns {Promise<void>}
+ *
+ * NPM Dependencies:
+ *  - auth0
  */
 exports.onExecutePostLogin = async (event, api) => {
 
@@ -15,7 +18,10 @@ exports.onExecutePostLogin = async (event, api) => {
 
     const {ManagementClient, AuthenticationClient} = require('auth0');
 
+    api.nope = api.nope || function() {};
+
     if (event?.user?.email_verified !== true) { // no linking if email is not verified
+        api.nope('email not verified');
         return;
     }
 
@@ -56,7 +62,6 @@ exports.onExecutePostLogin = async (event, api) => {
         }
     }
 
-    // This will make an Authentication API call
     const client = new ManagementClient({domain, token});
 
     // Search for other candidate users

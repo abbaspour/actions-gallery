@@ -1,13 +1,15 @@
 /**
- * Author: Amin Abbaspour <amin@okta.com>
+ * Author: Amin Abbaspour
  * Date: 2023-11-22
- * License: MIT (https://github.com/auth0/actions-galleryh/blob/main/LICENSE)
+ * License: MIT (https://github.com/auth0/actions-gallery/blob/main/LICENSE)
  */
 
 const {expect, test} = require('@jest/globals');
 const {jest: _jest} = require('@jest/globals');
 
 const {onExecutePostLogin} = require('./post-login-fetch-customer_id');
+
+// TODO: mock axios
 
 test('post-login-first-time', async () => {
     const mockUserFunction = _jest.fn();
