@@ -5,10 +5,16 @@
   },
   "dependencies": {
     "auth0": "^4.1.0",
-    "axios": "^1.6.2"
+    "auth0-js": "^9.23.3",
+    "axios": "^1.6.2",
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.1.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
+    "@types/auth0-js": "^9.21.5",
+    "@types/jsonwebtoken": "^9.0.5",
     "eslint": "^8.54.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.0",

@@ -1,3 +1,8 @@
 node_modules
 package-lock.json
 .idea
+.terraform.lock*
+*.plan
+.terraform/
+terraform.auto.tfvars
+*.tfstate*
