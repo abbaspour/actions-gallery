@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 /**
  * Author: Amin Abbaspour
  * Date: 2023-11-22
@@ -21,8 +20,10 @@ const jwt = require('jsonwebtoken');
  *  - uuid@9.0.1
  *  - axios@1.6.2
  *  - jsonwebtoken@9.0.2
+ *  - auth0@4.1.0
  */
 const interactive_login = new RegExp('^oidc-');
+const database_sub = new RegExp('^auth0|');
 
 async function exchange(domain, client_id, redirect_uri, code) {
 
@@ -76,6 +77,59 @@ async function exchange(domain, client_id, redirect_uri, code) {
     });
 }
 
+async function linkAndMakePrimary(event, api, primary_sub) {
+    console.log(`linking ${event.user.user_id} under ${primary_sub}`);
+
+    const {ManagementClient, AuthenticationClient} = require('auth0');
+
+    const domain = event?.secrets?.domain || event.request?.hostname;
+
+    let {value: token} = api.cache.get('management-token') || {};
+
+    if (!token) {
+        const {clientId, clientSecret} = event.secrets || {};
+
+        const cc = new AuthenticationClient({domain, clientId, clientSecret});
+
+        try {
+            const {data} = await cc.oauth.clientCredentialsGrant({audience: `https://${domain}/api/v2/`});
+
+            token = data?.access_token;
+
+            if (!token) {
+                console.log('failed get api v2 cc token');
+                return;
+            }
+            console.log('cache MIS!');
+
+            const result = api.cache.set('management-token', token, {ttl: data.expires_in * 1000});
+
+            if (result?.type === 'error') {
+                console.log('failed to set the token in the cache with error code', result.code);
+            }
+        } catch (err) {
+            console.log('failed calling cc grant', err);
+            return;
+        }
+    }
+
+    console.log(`m2m token: ${token}`);
+
+    const client = new ManagementClient({domain, token});
+
+    const {user_id, provider} = event.user.identities[0];
+
+    try {
+        await client.users.link({id: primary_sub}, {user_id, provider});
+    } catch (err) {
+        console.log(`unable to link, no changes. error: ${JSON.stringify(err)}`);
+        return;
+    }
+
+    api.authentication.setPrimaryUser(primary_sub);
+
+}
+
 exports.onExecutePostLogin = async (event, api) => {
 
     api.nope = api.nope || function () {
@@ -106,7 +160,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
     const auth0 = require('auth0-js');
 
-    const domain = event?.secrets?.clientId || 'actions-gallery.au.auth0.com';
+    const domain = event?.secrets?.domain || event.request?.hostname;
 
     const authClient = new auth0.Authentication({domain, clientID: event.client.client_id});
 
@@ -136,11 +190,26 @@ exports.onExecutePostLogin = async (event, api) => {
 exports.onContinuePostLogin = async (event, api) => {
     console.log(`onContinuePostLogin event: ${JSON.stringify(event)}`);
 
-    const domain = event?.secrets?.clientId || 'actions-gallery.au.auth0.com';
+    const domain = event?.secrets?.domain || event.request?.hostname;
 
     const {state, code} = event.request.query;
 
     const id_token = await exchange(domain, event.client.client_id, `https://${domain}/continue`, code);
 
-    console.log(`state: ${state}, code: ${code}, id_token: ${id_token}, email: ${id_token.email}, sub: ${id_token.sub}`);
+    console.log(`state: ${state}, code: ${code}, id_token: ${JSON.stringify(id_token)}`);
+
+    api.nope = api.nope || function () {
+    };
+
+    if (!id_token.email_verified) {
+        api.nope('email not verified');
+        return;
+    }
+
+    if (!database_sub.test(id_token.sub)) {
+        api.access.deny(`invalid sub from inner tx: ${id_token.sub}`);
+        return;
+    }
+
+    await linkAndMakePrimary(event, api, id_token.sub);
 };

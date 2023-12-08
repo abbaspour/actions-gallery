@@ -91,6 +91,7 @@ resource "auth0_user" "user_3" {
   connection_name = auth0_connection.users.name
   email = "a.abbaspour@gmail.com"
   password = var.default_password
+  email_verified = true
 }
 
 ## Email Server
