@@ -22,11 +22,11 @@ resource "auth0_client_grant" "m2m_client_scopes" {
   scopes = ["update:users"]
 }
 
-resource "auth0_action" "nest_transaction" {
-  name    = "Nested Transaction"
+resource "auth0_action" "interactive_account_linking" {
+  name    = "Interactive Account Linking Nested Transaction"
   runtime = "node18"
   deploy  = true
-  code    = file("../post-login/nested-transaction.js")
+  code    = file("../post-login/account-linking/interactive-account-linking.js")
 
   supported_triggers {
     id      = "post-login"
@@ -83,7 +83,7 @@ resource "auth0_trigger_actions" "login_flow" {
   trigger = "post-login"
 
   actions {
-    id           = auth0_action.nest_transaction.id
-    display_name = auth0_action.nest_transaction.name
+    id           = auth0_action.interactive_account_linking.id
+    display_name = auth0_action.interactive_account_linking.name
   }
 }

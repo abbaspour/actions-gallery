@@ -39,7 +39,7 @@ test('no-link-unverified-email', async () => {
         secrets: {clientId, clientSecret, domain}
     };
 
-    const {onExecutePostLogin} = require('./account-linking');
+    const {onExecutePostLogin} = require('./silent-account-linking');
     await onExecutePostLogin(mockEvent, mockApi);
 
     expect(mockApi.nope).toBeCalledWith(
@@ -112,7 +112,7 @@ test('linking-both-have-customer-id', async () => {
         return {ManagementClient, AuthenticationClient};
     });
 
-    const {onExecutePostLogin} = require('./account-linking');
+    const {onExecutePostLogin} = require('./silent-account-linking');
     await onExecutePostLogin(mockEvent, mockApi);
 
     expect(mockLink).toBeCalledWith(
@@ -185,7 +185,7 @@ test('linking-only-primary-has-customer-id', async () => {
         cache: {get: _jest.fn(), set: _jest.fn()}
     };
 
-    const {onExecutePostLogin} = require('./account-linking');
+    const {onExecutePostLogin} = require('./silent-account-linking');
     await onExecutePostLogin(mockEvent, mockApi);
 
     expect(mockLink).toBeCalledWith(

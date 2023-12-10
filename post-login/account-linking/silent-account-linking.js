@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /**
  * Link and merge customer_id
  *
