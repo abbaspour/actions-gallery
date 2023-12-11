@@ -8,8 +8,7 @@
     "auth0-js": "^9.23.3",
     "axios": "^1.6.2",
     "jsonwebtoken": "^9.0.2",
-    "jwks-rsa": "^3.1.0",
-    "uuid": "^9.0.1"
+    "jwks-rsa": "^3.1.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

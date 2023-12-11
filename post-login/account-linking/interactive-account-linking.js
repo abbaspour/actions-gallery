@@ -19,7 +19,6 @@
  *
  * NPM Dependencies:
  *  - auth0-js@9.23.3
- *  - uuid@9.0.1
  *  - axios@1.6.2
  *  - jsonwebtoken@9.0.2
  *  - auth0@4.1.0
@@ -27,7 +26,7 @@
 const interactive_login = new RegExp('^oidc-');
 const database_sub = new RegExp('^auth0|');
 
-async function exchangeAndVerify(api, domain, client_id, redirect_uri, code) {
+async function exchangeAndVerify(api, domain, client_id, redirect_uri, code, nonce) {
 
     const axios = require('axios');
 
@@ -91,6 +90,7 @@ async function exchangeAndVerify(api, domain, client_id, redirect_uri, code) {
         jwt.verify(id_token, getKey, {
             issuer: `https://${domain}/`,
             audience: client_id,
+            nonce,
             algorithms: 'RS256'
         }, (err, decoded) => {
             if (err) reject(err);
@@ -188,9 +188,8 @@ exports.onExecutePostLogin = async (event, api) => {
 
     const authClient = new auth0.Authentication({domain, clientID: event.client.client_id});
 
-    const {v4: uuid} = require('uuid');
-
-    const nonce = uuid();
+    const nonce = event.transaction.id;
+    console.log(`nonce for inner tx: ${nonce}`);
 
     const nestedAuthorizeURL = authClient.buildAuthorizeUrl({
         redirectUri: `https://${domain}/continue`,
@@ -224,7 +223,7 @@ exports.onContinuePostLogin = async (event, api) => {
 
     const {code} = event.request.query;
 
-    const id_token = await exchangeAndVerify(api, domain, event.client.client_id, `https://${domain}/continue`, code);
+    const id_token = await exchangeAndVerify(api, domain, event.client.client_id, `https://${domain}/continue`, code, event.transaction.id);
 
     //console.log(`code: ${code}, id_token: ${JSON.stringify(id_token)}`);
 

@@ -39,11 +39,6 @@ resource "auth0_action" "interactive_account_linking" {
   }
 
   dependencies {
-    name    = "uuid"
-    version = "9.0.1"
-  }
-
-  dependencies {
     name    = "axios"
     version = "1.6.2"
   }
