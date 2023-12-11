@@ -237,5 +237,12 @@ exports.onContinuePostLogin = async (event, api) => {
         return;
     }
 
+    /*
+    if (event.user.email !== id_token.email) {
+        api.access.deny('emails do not match');
+        return;
+    }
+    */
+
     await linkAndMakePrimary(event, api, id_token.sub);
 };
