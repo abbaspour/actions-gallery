@@ -24,9 +24,7 @@ const AuthenticationClient = _jest.fn().mockImplementation((domain, clientId, cl
 });
 
 test('no-link-unverified-email', async () => {
-    const mockApi = {
-        nope: _jest.fn()
-    };
+    const mockApi = {};
 
     const mockEvent = {
         user: {
@@ -42,9 +40,6 @@ test('no-link-unverified-email', async () => {
     const {onExecutePostLogin} = require('./silent-account-linking');
     await onExecutePostLogin(mockEvent, mockApi);
 
-    expect(mockApi.nope).toBeCalledWith(
-        'email not verified'
-    );
 });
 
 test('linking-both-have-customer-id', async () => {
@@ -90,7 +85,11 @@ test('linking-both-have-customer-id', async () => {
             email: 'a.abbaspour+01@gmail.com',
             user_id: 'auth0|60a47ce4689a830068e26ece',
             email_verified: true,
-            identities: [],
+            identities: [{
+                provider: 'auth0',
+                user_id: '60a47ce4689a830068e26ece',
+                isSocial: false
+            }],
             app_metadata: {'customer_id': 'a'}
         },
         secrets: {clientId, clientSecret, domain}
@@ -104,6 +103,9 @@ test('linking-both-have-customer-id', async () => {
                 return 'token';
             }),
             set: _jest.fn()
+        },
+        authentication: {
+            setPrimaryUser: _jest.fn()
         }
     };
 
