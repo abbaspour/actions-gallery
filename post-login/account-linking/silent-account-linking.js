@@ -14,16 +14,19 @@
  * NPM Dependencies:
  *  - auth0
  */
+
+
+/**
+ * Handler that will be called during the execution of a PostLogin flow.
+ *
+ * @param {Event} event - Details about the user and the context in which they are logging in.
+ * @param {PostLoginAPI} api - Interface whose methods can be used to change the behavior of the login.
+ */
 exports.onExecutePostLogin = async (event, api) => {
 
     console.log('account-link action user: ', event?.user?.email);
 
-    const {ManagementClient, AuthenticationClient} = require('auth0');
-
-    api.nope = api.nope || function() {};
-
     if (event?.user?.email_verified !== true) { // no linking if email is not verified
-        api.nope('email not verified');
         return;
     }
 
@@ -31,14 +34,18 @@ exports.onExecutePostLogin = async (event, api) => {
       if (event.user.identities.length > 1) { // no linking if user is already linked
           return;
       }
-      */
+    */
+
+    const {ManagementClient, AuthenticationClient} = require('auth0');
 
     const {domain} = event.secrets || {};
 
-    let {value: token} = api.cache.get('management-token') || {};
+    let {value: token} = api.cache.get('silent-management-token') || {};
 
     if (!token) {
         const {clientId, clientSecret} = event.secrets || {};
+
+        console.log(domain, clientId, clientSecret);
 
         const cc = new AuthenticationClient({domain, clientId, clientSecret});
 
@@ -51,9 +58,9 @@ exports.onExecutePostLogin = async (event, api) => {
                 console.log('failed get api v2 cc token');
                 return;
             }
-            console.log('cache MIS!');
+            console.log('cache MIS for m2m token');
 
-            const result = api.cache.set('management-token', token, {ttl: data.expires_in * 1000});
+            const result = api.cache.set('silent-management-token', token, {ttl: data.expires_in * 1000});
 
             if (result?.type === 'error') {
                 console.log('failed to set the token in the cache with error code', result.code);
@@ -75,7 +82,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
     const firstCandidate = candidateUsers.find((c) =>
         c.user_id !== event.user.user_id &&         // not the current user
-        //c.identities[0].provider === "auth0" &&   // DB user
+        c.identities[0].provider === 'auth0' &&     // DB user
         c.email_verified                            // make sure email is verified
     );
 
@@ -83,7 +90,13 @@ exports.onExecutePostLogin = async (event, api) => {
         return;
     }
 
-    const primaryChanged = firstCandidate.provider === 'auth0';
+    // TODO: support array result
+
+    console.log(`found first candidate: ${JSON.stringify(firstCandidate)}`);
+
+    const primaryChanged = firstCandidate.identities[0].isSocial === false;
+
+    console.log(`primaryChanged: ${primaryChanged}`);
 
     let primaryUserId, secondaryProvider, secondaryUserId, primaryCustomerId, secondaryCustomerId;
 
@@ -92,8 +105,8 @@ exports.onExecutePostLogin = async (event, api) => {
         secondaryProvider = event.user.identities[0].provider;
         secondaryUserId = event.user.identities[0].user_id;
 
-        primaryCustomerId = firstCandidate.app_metadata.customer_id;
-        secondaryCustomerId = event.user.app_metadata.customer_id;
+        primaryCustomerId = firstCandidate.app_metadata?.customer_id;
+        secondaryCustomerId = event.user.app_metadata?.customer_id;
     } else {
         primaryUserId = event.user.user_id;
         secondaryProvider = firstCandidate.identities[0].provider;
@@ -105,6 +118,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
     try {
         await client.users.link({id: primaryUserId}, {provider: secondaryProvider, user_id: secondaryUserId});
+        console.log(`linked provider ${secondaryProvider} user_id: ${secondaryUserId} to primary ${primaryUserId}`);
     } catch (err) {
         console.log('unable to link, no changes');
         return;
@@ -119,6 +133,9 @@ exports.onExecutePostLogin = async (event, api) => {
         }
     }
 
-    if (primaryChanged) api.authentication.setPrimaryUser(primaryUserId);
+    if (primaryChanged) {
+        api.authentication.setPrimaryUser(primaryUserId);
+        console.log(`change primary user to: ${primaryUserId}`);
+    }
 
 };

@@ -6,10 +6,6 @@ resource "auth0_client" "account_linking_m2m_client" {
   ]
 }
 
-data "auth0_resource_server" "api_v2" {
-  identifier = "https://${var.auth0_domain}/api/v2/"
-}
-
 data "auth0_client" "m2m_client" {
   depends_on = [auth0_client.account_linking_m2m_client]
   name = "M2M Account Linking"
@@ -74,6 +70,7 @@ resource "auth0_action" "interactive_account_linking" {
   }
 }
 
+/*
 resource "auth0_trigger_actions" "login_flow" {
   trigger = "post-login"
 
@@ -82,3 +79,4 @@ resource "auth0_trigger_actions" "login_flow" {
     display_name = auth0_action.interactive_account_linking.name
   }
 }
+*/

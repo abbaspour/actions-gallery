@@ -5,6 +5,11 @@ resource "auth0_tenant" "tenant_config" {
   }
 }
 
+data "auth0_resource_server" "api_v2" {
+  identifier = "https://${var.auth0_domain}/api/v2/"
+}
+
+
 # Users DB
 resource "auth0_connection" "users" {
   name = "Users"
@@ -109,6 +114,6 @@ resource "auth0_email_provider" "mailtrap" {
 
 ## outputs
 output "spa_login_url" {
-  value = "https://${var.auth0_domain}/authorize?client_id=${auth0_client.spa.id}&redirect_uri=https%3A%2F%2Fjwt.io&response_type=id_token&nonce=nonce&prompt=login&login_hint=user1@atko.email"
+  value = "https://${var.auth0_domain}/authorize?client_id=${auth0_client.spa.id}&redirect_uri=https%3A%2F%2Fjwt.io&response_type=id_token&nonce=nonce&prompt=login&login_hint=a.abbaspour@gmail.com"
 }
 
