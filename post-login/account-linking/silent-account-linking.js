@@ -94,7 +94,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
     console.log(`found first candidate: ${JSON.stringify(firstCandidate)}`);
 
-    const primaryChanged = firstCandidate.identities[0].isSocial === false;
+    const primaryChanged = firstCandidate.identities[0].provider === 'auth0';
 
     console.log(`primaryChanged: ${primaryChanged}`);
 
