@@ -27,11 +27,11 @@
 const interactive_login = new RegExp('^oidc-');
 const database_sub = new RegExp('^auth0|');
 
-async function exchange(domain, client_id, redirect_uri, code) {
+async function exchangeAndVerify(api, domain, client_id, redirect_uri, code) {
 
     const axios = require('axios');
 
-    console.log(`exchanging code: ${code}`);
+    //console.log(`exchanging code: ${code}`);
 
     const {data: {id_token}} =
         await axios({
@@ -49,7 +49,7 @@ async function exchange(domain, client_id, redirect_uri, code) {
             timeout: 5000 // 5 sec
         });
 
-    console.log(`id_token: ${id_token}`);
+    //console.log(`id_token: ${id_token}`);
 
     const jwt = require('jsonwebtoken');
 
@@ -60,11 +60,31 @@ async function exchange(domain, client_id, redirect_uri, code) {
     });
 
     function getKey(header, callback) {
-        // TODO: cache
-        client.getSigningKey(header.kid, function (err, key) {
-            const signingKey = key.publicKey || key.rsaPublicKey;
+
+        const {value: signingKey} = api.cache.get(`key-${header.kid}`) || {};
+
+        if (!signingKey) {
+            console.log(`cache MIS signing key: ${header.kid}`);
+
+            client.getSigningKey(header.kid, (err, key) => {
+                if (err) {
+                    console.log('failed to download signing key: ', err.message);
+                    return callback(err);
+                }
+
+                const signingKey = key.publicKey || key.rsaPublicKey;
+
+                const result = api.cache.set(`key-${header.kid}`, signingKey);
+
+                if (result?.type === 'error') {
+                    console.log('failed to set signing key in the cache', result.code);
+                }
+
+                callback(null, signingKey);
+            });
+        } else {
             callback(null, signingKey);
-        });
+        }
     }
 
     return new Promise((resolve, reject) => {
@@ -72,15 +92,15 @@ async function exchange(domain, client_id, redirect_uri, code) {
             issuer: `https://${domain}/`,
             audience: client_id,
             algorithms: 'RS256'
-        }, function (err, decoded) {
+        }, (err, decoded) => {
             if (err) reject(err);
-            resolve(decoded);
+            else resolve(decoded);
         });
     });
 }
 
 async function linkAndMakePrimary(event, api, primary_sub) {
-    console.log(`linking ${event.user.user_id} under ${primary_sub}`);
+    //console.log(`linking ${event.user.user_id} under ${primary_sub}`);
 
     const {ManagementClient, AuthenticationClient} = require('auth0');
 
@@ -102,7 +122,7 @@ async function linkAndMakePrimary(event, api, primary_sub) {
                 console.log('failed get api v2 cc token');
                 return;
             }
-            console.log('cache MIS!');
+            console.log('cache MIS m2m token!');
 
             const result = api.cache.set('management-token', token, {ttl: data.expires_in * 1000});
 
@@ -115,7 +135,7 @@ async function linkAndMakePrimary(event, api, primary_sub) {
         }
     }
 
-    console.log(`m2m token: ${token}`);
+    //console.log(`m2m token: ${token}`);
 
     const client = new ManagementClient({domain, token});
 
@@ -123,6 +143,7 @@ async function linkAndMakePrimary(event, api, primary_sub) {
 
     try {
         await client.users.link({id: primary_sub}, {user_id, provider});
+        console.log(`link successful ${primary_sub} to ${user_id} of provider: ${provider}`);
     } catch (err) {
         console.log(`unable to link, no changes. error: ${JSON.stringify(err)}`);
         return;
@@ -130,6 +151,7 @@ async function linkAndMakePrimary(event, api, primary_sub) {
 
     api.authentication.setPrimaryUser(primary_sub);
 
+    console.log(`changed primary from ${event.user.user_id} to ${primary_sub}`);
 }
 
 /**
@@ -140,27 +162,21 @@ async function linkAndMakePrimary(event, api, primary_sub) {
  */
 exports.onExecutePostLogin = async (event, api) => {
 
-    api.nope = api.nope || function () {
-    };
-
-    console.log(JSON.stringify(event));
+    //console.log(JSON.stringify(event));
 
     const protocol = event?.transaction?.protocol || 'unknown';
 
     if (!interactive_login.test(protocol)) {
-        api.nope('non-interactive-login');
         return;
     }
 
     const strategy = event?.connection?.strategy || 'auth0';
 
     if (strategy === 'auth0') {
-        api.nope('auth0-strategy');
         return;
     }
 
     if (event.user.identities.length > 1) { // already links
-        api.nope('already-linked');
         return;
     }
 
@@ -202,21 +218,18 @@ exports.onExecutePostLogin = async (event, api) => {
  * @param {PostLoginAPI} api - Interface whose methods can be used to change the behavior of the login.
  */
 exports.onContinuePostLogin = async (event, api) => {
-    console.log(`onContinuePostLogin event: ${JSON.stringify(event)}`);
+    //console.log(`onContinuePostLogin event: ${JSON.stringify(event)}`);
 
     const domain = event?.secrets?.domain || event.request?.hostname;
 
-    const {state, code} = event.request.query;
+    const {code} = event.request.query;
 
-    const id_token = await exchange(domain, event.client.client_id, `https://${domain}/continue`, code);
+    const id_token = await exchangeAndVerify(api, domain, event.client.client_id, `https://${domain}/continue`, code);
 
-    console.log(`state: ${state}, code: ${code}, id_token: ${JSON.stringify(id_token)}`);
+    //console.log(`code: ${code}, id_token: ${JSON.stringify(id_token)}`);
 
-    api.nope = api.nope || function () {
-    };
-
-    if (!id_token.email_verified) {
-        api.nope('email not verified');
+    if (id_token.email_verified !== true) {
+        console.log(`skipped linking, email not verified in nested tx user: ${id_token.email}`);
         return;
     }
 
