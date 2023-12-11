@@ -82,7 +82,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
     const firstCandidate = candidateUsers.find((c) =>
         c.user_id !== event.user.user_id &&         // not the current user
-        c.identities[0].provider === 'auth0' &&     // DB user
+        //c.identities[0].provider === 'auth0' &&     // DB user
         c.email_verified                            // make sure email is verified
     );
 
