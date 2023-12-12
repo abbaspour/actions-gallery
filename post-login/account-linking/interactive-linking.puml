@@ -1,3 +1,5 @@
+@startuml
+
 title Interactive Account Linking
 
 autonumber
@@ -38,3 +40,5 @@ a0 -> a0: link users and (optionally) change primary
 end
 
 a0 -> u: app/cb?{ state=s1 & code=c2 }
+
+@enduml
