@@ -16,6 +16,7 @@ A collection of various Auth0 Actions with best practices like unit testing, lin
 * [ ] GitHub Actions CI/CD
 * [ ] Validate email on first login with OTP
 * [ ] send and receive JWT token 
+* [ ] Zoom clips
 
 
 
