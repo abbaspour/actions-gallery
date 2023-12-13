@@ -30,3 +30,21 @@ variable "mailtrap_smtp_pass" {
   type = string
   sensitive = true
 }
+
+## redis cloud
+variable "redis_endpoint" {
+  type = string
+}
+
+variable "redis_username" {
+  type = string
+  default = "default"
+}
+
+variable "redis_password" {
+  type = string
+  sensitive = true
+}
+
+
+

@@ -50,6 +50,7 @@ resource "auth0_action" "silent_account_linking" {
   }
 }
 
+/*
 resource "auth0_trigger_actions" "silent_linking_trigger" {
   trigger = "post-login"
 
@@ -58,3 +59,4 @@ resource "auth0_trigger_actions" "silent_linking_trigger" {
     display_name = auth0_action.silent_account_linking.name
   }
 }
+*/
