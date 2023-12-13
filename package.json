@@ -7,12 +7,14 @@
     "auth0": "^4.1.0",
     "auth0-js": "^9.23.3",
     "axios": "^1.6.2",
+    "ioredis": "^5.3.2",
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.1.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/auth0-js": "^9.21.5",
+    "@types/ioredis": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.5",
     "eslint": "^8.54.0",
     "eslint-config-standard": "^17.1.0",
