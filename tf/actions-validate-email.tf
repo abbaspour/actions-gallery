@@ -1,8 +1,8 @@
-resource "auth0_action" "interactive_account_linking" {
-  name    = "Interactive Account Linking Nested Transaction"
+resource "auth0_action" "validate_email" {
+  name    = "Interactive OTP Email Validation post login"
   runtime = "node18"
   deploy  = true
-  code    = file("../post-login/account-linking/interactive-account-linking.js")
+  code    = file("../post-login/validate-email/validate-email.js")
 
   supported_triggers {
     id      = "post-login"
@@ -50,13 +50,11 @@ resource "auth0_action" "interactive_account_linking" {
   }
 }
 
-/*
-resource "auth0_trigger_actions" "login_flow" {
+resource "auth0_trigger_actions" "validate_email" {
   trigger = "post-login"
 
   actions {
-    id           = auth0_action.interactive_account_linking.id
-    display_name = auth0_action.interactive_account_linking.name
+    id           = auth0_action.validate_email.id
+    display_name = auth0_action.validate_email.name
   }
 }
-*/
