@@ -27,7 +27,7 @@
 const interactive_login = new RegExp('^oidc-');
 const database_sub = new RegExp('^auth0|');
 
-async function exchangeAndVerify(api, domain, client_id, redirect_uri, code, nonce) {
+async function exchangeAndVerify(api, domain, client_id, client_secret, redirect_uri, code, nonce) {
 
     const axios = require('axios');
 
@@ -41,6 +41,7 @@ async function exchangeAndVerify(api, domain, client_id, redirect_uri, code, non
                 client_id,
                 code,
                 grant_type: 'authorization_code',
+                client_secret,
                 redirect_uri
             },
             headers: {
@@ -182,8 +183,9 @@ exports.onExecutePostLogin = async (event, api) => {
     const auth0 = require('auth0-js');
 
     const domain = event?.secrets?.domain || event.request?.hostname;
+    const clientID = event?.secrets?.companionClientId || event.client.client_id;
 
-    const authClient = new auth0.Authentication({domain, clientID: event.client.client_id});
+    const authClient = new auth0.Authentication({domain, clientID});
 
     const nonce = event.transaction.id;
     console.log(`nonce for inner tx: ${nonce}`);
@@ -221,7 +223,10 @@ exports.onContinuePostLogin = async (event, api) => {
 
     const {code} = event.request.query;
 
-    const id_token = await exchangeAndVerify(api, domain, event.client.client_id, `https://${domain}/continue`, code, event.transaction.id);
+    const clientID = event?.secrets?.companionClientId || event.client.client_id;
+    const clientSecret = event?.secrets?.companionClientSecret || '';
+
+    const id_token = await exchangeAndVerify(api, domain, clientID, clientSecret, `https://${domain}/continue`, code, event.transaction.id);
 
     //console.log(`code: ${code}, id_token: ${JSON.stringify(id_token)}`);
 
@@ -235,12 +240,10 @@ exports.onContinuePostLogin = async (event, api) => {
         return;
     }
 
-    /*
     if (event.user.email !== id_token.email) {
         api.access.deny('emails do not match');
         return;
     }
-    */
 
     await markEmailVerified(event, api);
 };

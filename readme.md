@@ -6,16 +6,17 @@ A collection of various Auth0 Actions with best practices like unit testing, lin
 * [ ] DefinitelyTyped Actions `event` and `api` objects  
 * [ ] detect when APIv2 clients scopes are too many to cache
 * [ ] cloudwatch logging
-* [ ] M2M rate limit CC grant per client 
-* [ ] post change password invalidate all refresh tokens
-* [ ] MFA password reset post challenge
+* [x] M2M rate limit CC grant per client 
+* [x] post change password invalidate all refresh tokens
+* [x] MFA password reset post challenge
 * [ ] send MFA OTP to Slack/WhatsApp
-* [ ] Email user of new device login
-* [ ] versioning, TF, etc
+* [x] Email user of new device login
+* [x] versioning, TF, etc
 * [ ] Post registration email/slack/etc
 * [ ] GitHub Actions CI/CD
-* [ ] Validate email on first login with OTP
-* [ ] send and receive JWT token 
+* [x] Validate email on first login with OTP
+* [ ] send and receive JWT token
+* [ ] NewRelic logs
 * [ ] Zoom clips
 
 

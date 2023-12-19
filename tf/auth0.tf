@@ -48,8 +48,7 @@ resource "auth0_client" "spa" {
   is_first_party = true
 
   callbacks = [
-    "https://jwt.io",
-    "https://${var.auth0_domain}/continue"
+    "https://jwt.io"
   ]
 
   allowed_logout_urls = [
