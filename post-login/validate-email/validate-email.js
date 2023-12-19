@@ -145,8 +145,9 @@ async function markEmailVerified(event, api) {
         console.log(`successful update email_verified to true for user: ${event.user.email}`);
     } catch (err) {
         console.log(`unable to update email_verified, no changes. error: ${JSON.stringify(err)}`);
-        
     }
+
+    api.idToken.setCustomClaim('email_verified', true);
 
 }
 

@@ -15,9 +15,10 @@ const interactive_login = new RegExp('^oidc-');
  *
  * TODO: can we count on first interactive login only?
  * TODO: api.cache to cache est session count
+ * TODO: use session management API
  *
  * NPM Dependencies:
- *  - redisio
+ *  - ioredis
  */
 exports.onExecutePostLogin = async (event, api) => {
 
