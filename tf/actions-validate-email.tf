@@ -1,3 +1,40 @@
+# companion app
+resource "auth0_client" "companion_app_email_validation" {
+  name = "Companion App for Email Validation Action"
+  description = "Companion App for Email Validation Action"
+  app_type = "regular_web"
+  oidc_conformant = true
+  is_first_party = true
+
+  callbacks = [
+    "https://${var.auth0_domain}/continue"
+  ]
+
+  allowed_logout_urls = [
+  ]
+
+  jwt_configuration {
+    alg = "RS256"
+  }
+}
+
+data "auth0_client" "companion_app_email_validation" {
+  //depends_on = [auth0_client.m2m_client_update_users]
+  name = auth0_client.companion_app_email_validation.name
+  client_id = auth0_client.companion_app_email_validation.client_id
+}
+
+data "auth0_connection" "email_connection" {
+  name = "email"
+}
+
+resource "auth0_connection_clients" "comp_app_email_verify_clients" {
+  connection_id   = data.auth0_connection.email_connection.id
+  enabled_clients = [auth0_client.companion_app_email_validation.id]
+}
+
+
+# action
 resource "auth0_action" "validate_email" {
   name    = "Interactive OTP Email Validation post login"
   runtime = "node18"
@@ -42,6 +79,16 @@ resource "auth0_action" "validate_email" {
   secrets {
     name  = "clientSecret"
     value = data.auth0_client.m2m_client_update_users.client_secret
+  }
+
+  secrets {
+    name  = "companionClientId"
+    value = auth0_client.companion_app_email_validation.client_id
+  }
+
+  secrets {
+    name  = "companionClientSecret"
+    value = data.auth0_client.companion_app_email_validation.client_secret
   }
 
   secrets {
