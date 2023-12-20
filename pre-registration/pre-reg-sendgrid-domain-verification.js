@@ -9,6 +9,7 @@
  * @param {PreUserRegistrationAPI} api - Interface whose methods can be used to change the behavior of the signup.
  */
 const client = require('@sendgrid/client');
+
 exports.onExecutePreUserRegistration = async (event, api) => {
     const ERROR_MESSAGE = 'Something went wrong, please contact our support center.';
 

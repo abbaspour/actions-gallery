@@ -7,18 +7,19 @@
  *
  * @param {Event} event - Details about the user and the context in which they are logging in.
  * @param {SendPhoneMessageAPI} api - Methods and utilities to help change the behavior of sending a phone message.
-*/
+ */
 const PhoneNumber = require('awesome-phonenumber');
+
 exports.onExecuteSendPhoneMessage = async (event, api) => {
     const accountSid = event.secrets.TWILIO_ACCOUNT_SID;
     const authToken = event.secrets.TWILIO_AUTH_TOKEN;
     const fromPhoneNumber = event.secrets.TWILIO_PHONE_NUMBER;
 
-    const twilioClient = require("twilio")(accountSid, authToken);
-    const { action, text, recipient, message_type } = event.message_options;
-    const ALLOWED_COUNTRY_CODES = ["AU"];
-   var pn = new PhoneNumber(recipient); 
-    var mfaUser = {
+    const twilioClient = require('twilio')(accountSid, authToken);
+    const {action, text, recipient, message_type} = event.message_options;
+    const ALLOWED_COUNTRY_CODES = ['AU'];
+    const pn = new PhoneNumber(recipient);
+    const mfaUser = {
         action: action,
         message_type: message_type,
         country_code: pn.getCountryCode(),
@@ -30,8 +31,8 @@ exports.onExecuteSendPhoneMessage = async (event, api) => {
     };
 
     // send mfaUser to splunk / sumo for logging.
-    
-    async function isEnrollmentAllowed(countryCode) {
+
+    function isEnrollmentAllowed(countryCode) {
         return ALLOWED_COUNTRY_CODES.includes(countryCode);
     }
 
@@ -46,16 +47,16 @@ exports.onExecuteSendPhoneMessage = async (event, api) => {
             }).catch(error => {
                 reject(error);
             });
-        })
+        });
     }
 
-    async function enrollment(countryCode, body, from, to){
+    async function enrollment(countryCode, body, from, to) {
         try {
-            var isAllowed = await isEnrollmentAllowed(countryCode);
+            const isAllowed = isEnrollmentAllowed(countryCode);
             if (isAllowed) {
-                var messageResponse = await sendSMSToGateway(body, from, to);
+                const messageResponse = await sendSMSToGateway(body, from, to);
             } else {
-                var errMsg = `Someone tried to enroll with phone number ${recipient}  from country ${countryCode}`;
+                const errMsg = `Someone tried to enroll with phone number ${recipient}  from country ${countryCode}`;
                 throw new Error(errMsg);
             }
         } catch (e) {
@@ -63,13 +64,14 @@ exports.onExecuteSendPhoneMessage = async (event, api) => {
         }
     }
 
-    async function send2FA (countryCode, body, from, to) {
+    async function send2FA(countryCode, body, from, to) {
         try {
-            var messageResponse = await sendSMSToGateway(body, from, to);
+            const messageResponse = await sendSMSToGateway(body, from, to);
         } catch (e) {
             throw new Error(e);
         }
     }
+
     switch (action) {
         case 'enrollment':
             await enrollment(pn.getRegionCode(), text, fromPhoneNumber, recipient);

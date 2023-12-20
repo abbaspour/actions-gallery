@@ -5,9 +5,9 @@
  * Date: 2023-11-24
  * License: MIT (https://github.com/auth0/actions-gallery/blob/main/LICENSE)
  *
-* @param {Event} event - Details about client credentials grant request.
-* @param {CredentialsExchangeAPI} api - Interface whose methods can be used to change the behavior of client credentials grant.
-*/
+ * @param {Event} event - Details about client credentials grant request.
+ * @param {CredentialsExchangeAPI} api - Interface whose methods can be used to change the behavior of client credentials grant.
+ */
 const AWS = require('aws-sdk');
 const merge = require('lodash.merge');
 const REQUEST_HISTORY_TABLE_NAME = '<DYNAMO_DB_TABLE_NAME_FOR_RATE_LIMITS>';
@@ -15,8 +15,8 @@ const AWS_REGION = '<AWS_REGION>';
 const MAX_REQUEST_HISTORY_SIZE = 100;
 
 exports.onExecuteCredentialsExchange = async (event, api) => {
-  const {client, secrets} = event;
-  const rateLimits = { //default options
+    const {client, secrets} = event;
+    const rateLimits = { //default options
         enabled: true,
         rateLimitPerTimePeriod: 10,
         timePeriod: 1000 * 60 * 60 * 24 // 24 hours
@@ -35,21 +35,22 @@ exports.onExecuteCredentialsExchange = async (event, api) => {
         const dynamo = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
         try {
             const rateLimited = await getRequestHistory(client.client_id, dynamo)
-            .then(requestHistory => requestHistory.filter(requestTime => requestTime > Date.now() - rateLimits.timePeriod))
-            .then(requestHistoryWithinTimePeriod => isRateLimited(requestHistoryWithinTimePeriod, rateLimits))
-            .then(clientState => updateRequestHistory(client.client_id, clientState, dynamo))
-            .then(isRL => {
-                return isRL;
-            });
+                .then(requestHistory => requestHistory.filter(requestTime => requestTime > Date.now() - rateLimits.timePeriod))
+                .then(requestHistoryWithinTimePeriod => isRateLimited(requestHistoryWithinTimePeriod, rateLimits))
+                .then(clientState => updateRequestHistory(client.client_id, clientState, dynamo))
+                .then(isRL => {
+                    return isRL;
+                });
             if (rateLimited) {
-                return api.access.deny('invalid_request',`Client ${client.name} (${client.client_id}) has exceeded the rate limit of ${rateLimits.rateLimitPerTimePeriod} tokens every ${rateLimits.timePeriod / (1000 * 60 * 60)} hour/s`);
-            } 
+                return api.access.deny('invalid_request', `Client ${client.name} (${client.client_id}) has 
+                exceeded the rate limit of ${rateLimits.rateLimitPerTimePeriod} tokens every ${rateLimits.timePeriod / (1000 * 60 * 60)} hour/s`);
+            }
 
         } catch (error) {
             console.log(error);
-            return api.access.deny('server_error','Something Went wrong');
+            return api.access.deny('server_error', 'Something Went wrong');
         }
-    } 
+    }
 };
 
 const getRequestHistory = async (clientId, dynamo) => {
