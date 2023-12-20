@@ -52,5 +52,4 @@ describe('onExecutePreUserRegistration', () => {
         expect(mockApi.access.deny).toHaveBeenCalledWith('Something went wrong, please contact our support center.');
     });
 
-    // Add more tests as needed for edge cases and error scenarios
 });

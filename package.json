@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "jest",
+    "test": "jest --maxWorkers 1",
     "lint": "eslint --fix"
   },
   "dependencies": {
@@ -19,7 +19,8 @@
     "liquid": "^5.1.1",
     "lodash": "^4.17.21",
     "lodash.merge": "^4.6.2",
-    "nodemailer": "^6.9.7"
+    "nodemailer": "^6.9.7",
+    "twilio": "^4.20.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

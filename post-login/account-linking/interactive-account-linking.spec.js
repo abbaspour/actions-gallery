@@ -79,6 +79,5 @@ describe('onExecutePostLogin', () => {
         expect(mockApi.redirect.sendUserTo).not.toHaveBeenCalled();
     });
 
-    // Add more tests as needed for edge cases and error scenarios
 });
 

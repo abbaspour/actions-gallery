@@ -8,7 +8,7 @@ const axios = require('axios');
 
 exports.onExecuteSendPhoneMessage = async (event, api) => {
     const SLACK_WEBHOOK = event.secrets.SLACK_WEBHOOK;
-    const {action, text, recipient, message_type} = event.message_options;
+    const {action, text, recipient} = event.message_options;
     const slackText = `Action ${action} \nRecipient: ${recipient} \nMessage: ${text}`;
     // send to slack
     const {data} =
@@ -23,5 +23,5 @@ exports.onExecuteSendPhoneMessage = async (event, api) => {
             },
             timeout: 5000 // 5 sec
         });
-    console.log(data);
+    console.log(`response from slack: ${data}`);
 };

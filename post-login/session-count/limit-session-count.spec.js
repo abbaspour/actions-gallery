@@ -114,5 +114,4 @@ describe('onExecutePostLogin', () => {
         //expect(console.log).toHaveBeenCalledWith('session count for user testUserId: 5');
     });
 
-    // Add more tests as needed for edge cases and error scenarios
 });
