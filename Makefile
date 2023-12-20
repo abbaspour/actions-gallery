@@ -1,13 +1,13 @@
 all: test
 
 test: node_modules
-	npm run test
+	pnpm run test
 
 lint: node_modules
-	npm run lint
+	pnpm run lint
 
 node_modules: package.json
-	npm i
+	pnpm i
 
 clean:
 	rm -rf node_modules

@@ -4,17 +4,23 @@
     "lint": "eslint --fix"
   },
   "dependencies": {
+    "@sendgrid/client": "^8.1.0",
+    "async": "^3.2.5",
     "auth0": "^4.1.0",
+    "auth0-extension-tools": "^1.5.2",
     "auth0-js": "^9.23.3",
+    "awesome-phonenumber": "^6.2.0",
+    "aws-sdk": "^2.1522.0",
     "axios": "^1.6.2",
     "ioredis": "^5.3.2",
     "jsonwebtoken": "^9.0.2",
-    "jwks-rsa": "^3.1.0"
+    "jwks-rsa": "^3.1.0",
+    "lodash": "^4.17.21",
+    "lodash.merge": "^4.6.2"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/auth0-js": "^9.21.5",
-    "@types/ioredis": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.5",
     "eslint": "^8.54.0",
     "eslint-config-standard": "^17.1.0",
