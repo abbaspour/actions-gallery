@@ -11,6 +11,7 @@ resource "auth0_action" "register_deny_list" {
 
 }
 
+/*
 resource "auth0_trigger_actions" "register_deny_list" {
   trigger = "pre-user-registration"
 
@@ -19,3 +20,4 @@ resource "auth0_trigger_actions" "register_deny_list" {
     display_name = auth0_action.register_deny_list.name
   }
 }
+*/
