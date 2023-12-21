@@ -1,5 +1,5 @@
 /**
- * Fetch CRM id before Registration
+ * Fetch customer_id from CRM before registration
  *
  * Author: Amin Abbaspour
  * Date: 2023-11-22

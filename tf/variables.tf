@@ -22,6 +22,16 @@ variable "default_password" {
 }
 
 ## mailtrap
+variable "mailtrap_smtp_host" {
+  type = string
+  default = "sandbox.smtp.mailtrap.io"
+}
+
+variable "mailtrap_smtp_port" {
+  type = number
+  default = 2525
+}
+
 variable "mailtrap_smtp_user" {
   type = string
 }
@@ -46,5 +56,10 @@ variable "redis_password" {
   sensitive = true
 }
 
-
-
+/*
+# slack
+variable "slack_webhook_url" {
+  type = string
+  sensitive = true
+}
+*/

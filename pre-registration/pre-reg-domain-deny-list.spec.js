@@ -1,4 +1,4 @@
-const { onExecutePreUserRegistration } = require('./pre-reg-domain-allowed-list');
+const { onExecutePreUserRegistration } = require('./pre-reg-domain-deny-list');
 
 const {expect, describe, it, beforeEach} = require('@jest/globals');
 const {jest: _jest} = require('@jest/globals');

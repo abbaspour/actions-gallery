@@ -104,12 +104,37 @@ resource "auth0_email_provider" "mailtrap" {
   enabled = true
   default_from_address = "noreply@actions-gallery.co"
   credentials {
-    smtp_host = "sandbox.smtp.mailtrap.io"
-    smtp_port = 2525
+    smtp_host = var.mailtrap_smtp_host
+    smtp_port = var.mailtrap_smtp_port
     smtp_user = var.mailtrap_smtp_user
     smtp_pass = var.mailtrap_smtp_pass
   }
 }
+
+## SMS gateway
+/*
+resource "auth0_connection" "sms" {
+  name     = "sms"
+  strategy = "sms"
+
+  options {
+    disable_signup         = false
+    name                   = "sms"
+    from                   = "+15555555555"
+    syntax                 = "md_with_macros"
+    template               = "Your one-time password is @@password@@"
+    brute_force_protection = true
+    provider               = "sms_gateway"
+    gateway_url            = var.slack_webhook_url
+    forward_request_info   = true
+
+    totp {
+      time_step = 300
+      length    = 6
+    }
+  }
+}
+*/
 
 ## outputs
 output "spa_login_url" {

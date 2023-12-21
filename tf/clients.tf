@@ -8,7 +8,6 @@ resource "auth0_client" "m2m_client_update_users" {
 }
 
 data "auth0_client" "m2m_client_update_users" {
-  //depends_on = [auth0_client.m2m_client_update_users]
   name = auth0_client.m2m_client_update_users.name
   client_id = auth0_client.m2m_client_update_users.client_id
 }
@@ -29,7 +28,6 @@ resource "auth0_client" "m2m_client_update_read_users" {
 }
 
 data "auth0_client" "m2m_client_update_read_users" {
-  //depends_on = [auth0_client.m2m_client_update_read_users]
   name = auth0_client.m2m_client_update_read_users.name
   client_id = auth0_client.m2m_client_update_read_users.client_id
 }
