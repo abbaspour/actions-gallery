@@ -104,8 +104,8 @@ resource "auth0_email_provider" "mailtrap" {
   enabled = true
   default_from_address = "noreply@actions-gallery.co"
   credentials {
-    smtp_host = "sandbox.smtp.mailtrap.io"
-    smtp_port = 2525
+    smtp_host = var.mailtrap_smtp_host
+    smtp_port = var.mailtrap_smtp_port
     smtp_user = var.mailtrap_smtp_user
     smtp_pass = var.mailtrap_smtp_pass
   }

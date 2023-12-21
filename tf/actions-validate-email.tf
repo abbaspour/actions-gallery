@@ -19,7 +19,6 @@ resource "auth0_client" "companion_app_email_validation" {
 }
 
 data "auth0_client" "companion_app_email_validation" {
-  //depends_on = [auth0_client.m2m_client_update_users]
   name = auth0_client.companion_app_email_validation.name
   client_id = auth0_client.companion_app_email_validation.client_id
 }
@@ -97,6 +96,7 @@ resource "auth0_action" "validate_email" {
   }
 }
 
+/*
 resource "auth0_trigger_actions" "validate_email" {
   trigger = "post-login"
 
@@ -105,3 +105,4 @@ resource "auth0_trigger_actions" "validate_email" {
     display_name = auth0_action.validate_email.name
   }
 }
+*/

@@ -22,6 +22,16 @@ variable "default_password" {
 }
 
 ## mailtrap
+variable "mailtrap_smtp_host" {
+  type = string
+  default = "sandbox.smtp.mailtrap.io"
+}
+
+variable "mailtrap_smtp_port" {
+  type = number
+  default = 2525
+}
+
 variable "mailtrap_smtp_user" {
   type = string
 }
