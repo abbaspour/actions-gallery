@@ -8,8 +8,6 @@
  * @param {Event} event - Details about the user and the context in which they are logging in.
  * @param {SendPhoneMessageAPI} api - Methods and utilities to help change the behavior of sending a phone message.
  */
-const PhoneNumber = require('awesome-phonenumber');
-
 exports.onExecuteSendPhoneMessage = async (event, api) => {
     const accountSid = event.secrets.TWILIO_ACCOUNT_SID;
     const authToken = event.secrets.TWILIO_AUTH_TOKEN;
@@ -18,6 +16,9 @@ exports.onExecuteSendPhoneMessage = async (event, api) => {
     const twilioClient = require('twilio')(accountSid, authToken);
     const {action, text, recipient, message_type} = event.message_options;
     const ALLOWED_COUNTRY_CODES = ['AU'];
+
+    const PhoneNumber = require('awesome-phonenumber');
+
     const pn = new PhoneNumber(recipient);
     const mfaUser = {
         action: action,
