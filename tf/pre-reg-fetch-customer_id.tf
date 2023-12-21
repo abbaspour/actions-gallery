@@ -15,6 +15,7 @@ resource "auth0_action" "crm_fetch_customer_id" {
   }
 }
 
+/*
 resource "auth0_trigger_actions" "register_deny_list" {
   trigger = "pre-user-registration"
 
@@ -23,3 +24,4 @@ resource "auth0_trigger_actions" "register_deny_list" {
     display_name = auth0_action.crm_fetch_customer_id.name
   }
 }
+*/

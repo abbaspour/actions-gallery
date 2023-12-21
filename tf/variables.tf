@@ -56,5 +56,10 @@ variable "redis_password" {
   sensitive = true
 }
 
-
-
+/*
+# slack
+variable "slack_webhook_url" {
+  type = string
+  sensitive = true
+}
+*/

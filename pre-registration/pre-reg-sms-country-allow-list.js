@@ -16,7 +16,7 @@ const ALLOWED_COUNTRY_CODES = ['AU'];
 exports.onExecutePreUserRegistration = async (event, api) => {
     const connection = event?.connection?.name;
 
-    async function isPassworlessAllowed(countryCode) {
+    async function isPasswordlessAllowed(countryCode) {
         return ALLOWED_COUNTRY_CODES.includes(countryCode);
     }
 
@@ -31,9 +31,9 @@ exports.onExecutePreUserRegistration = async (event, api) => {
         };
         // send to splunk /sumo
         console.log(pwdUser);
-        const isAllowed = await isPassworlessAllowed(pn.getRegionCode());
+        const isAllowed = await isPasswordlessAllowed(pn.getRegionCode());
         if (!isAllowed) {
-            api.access.deny('no_signups_outside_australia', 'You are not allowed to register');
+            api.access.deny('region-constraint', 'You are not allowed to register');
         }
     }
 };

@@ -200,7 +200,7 @@ exports.onExecutePostLogin = async (event, api) => {
         scope: 'openid profile email',
         //responseMode: 'form_post' // Auth0 wants `state` in query parameter, hence we can't do form_post :(
         // TODO: PKCE
-        // NOTE: authentication profile should be "Identifier First"
+        // NOTE: authentication profile should be "Identifier First" in NUL
     });
 
     console.log(`redirecting to ${nestedAuthorizeURL}`);

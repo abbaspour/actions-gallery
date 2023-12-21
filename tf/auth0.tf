@@ -111,6 +111,31 @@ resource "auth0_email_provider" "mailtrap" {
   }
 }
 
+## SMS gateway
+/*
+resource "auth0_connection" "sms" {
+  name     = "sms"
+  strategy = "sms"
+
+  options {
+    disable_signup         = false
+    name                   = "sms"
+    from                   = "+15555555555"
+    syntax                 = "md_with_macros"
+    template               = "Your one-time password is @@password@@"
+    brute_force_protection = true
+    provider               = "sms_gateway"
+    gateway_url            = var.slack_webhook_url
+    forward_request_info   = true
+
+    totp {
+      time_step = 300
+      length    = 6
+    }
+  }
+}
+*/
+
 ## outputs
 output "spa_login_url" {
   value = "https://${var.auth0_domain}/authorize?client_id=${auth0_client.spa.id}&redirect_uri=https%3A%2F%2Fjwt.io&response_type=id_token&nonce=nonce&prompt=login&scope=openid%20profile%20email"
