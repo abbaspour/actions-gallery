@@ -39,7 +39,7 @@ describe('onExecutePreUserRegistration', () => {
         await onExecutePreUserRegistration(mockEvent, mockApi);
 
         // Expect access.deny to be called with the correct message
-        expect(mockApi.access.deny).toHaveBeenCalledWith('Something went wrong, please contact our support center.');
+        expect(mockApi.access.deny).toHaveBeenCalledWith('something went wrong', 'denied domain');
     });
 
     it('should deny registration for another disallowed email domain', async () => {
@@ -49,7 +49,7 @@ describe('onExecutePreUserRegistration', () => {
         await onExecutePreUserRegistration(mockEvent, mockApi);
 
         // Expect access.deny to be called with the correct message
-        expect(mockApi.access.deny).toHaveBeenCalledWith('Something went wrong, please contact our support center.');
+        expect(mockApi.access.deny).toHaveBeenCalledWith('something went wrong', 'denied domain');
     });
 
 });
