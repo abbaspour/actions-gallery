@@ -5,6 +5,8 @@
  * Date: 2023-11-24
  * License: MIT (https://github.com/auth0/actions-gallery/blob/main/LICENSE)
  *
+ * TODO: Terraform & code review & unit test
+ *
  * @param {Event} event - Details about client credentials grant request.
  * @param {CredentialsExchangeAPI} api - Interface whose methods can be used to change the behavior of client credentials grant.
  */
