@@ -1,0 +1,28 @@
+[
+  {
+    "kind": "admin#directory#group",
+    "id": "01baon6m2gef3w5",
+    "etag": "xxxx",
+    "email": "g1@abbaspour.net",
+    "name": "g1",
+    "directMembersCount": "1",
+    "description": "Sample Group 1",
+    "adminCreated": false,
+    "nonEditableAliases": [
+      "g1@abbaspour.net.test-google-a.com"
+    ]
+  },
+  {
+    "kind": "admin#directory#group",
+    "id": "01d96cc03ii30i2",
+    "etag": "xxx",
+    "email": "g2@abbaspour.net",
+    "name": "G2",
+    "directMembersCount": "1",
+    "description": "",
+    "adminCreated": true,
+    "nonEditableAliases": [
+      "g2@abbaspour.net.test-google-a.com"
+    ]
+  }
+]

@@ -137,5 +137,18 @@ describe('onExecutePostLogin', () => {
         expect(mockApi.access.deny).toBeCalled();
 
     });
+
+    it('should not fail for dx-dpp', async () => {
+        const mockEvent = {
+            transaction: {
+                requested_scopes: [
+                    'offline_access',
+                    'read:clients',
+                    'create:clients'
+                ],
+            },
+
+        };
+    });
 });
 
