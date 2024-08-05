@@ -1,17 +1,23 @@
 // noinspection DuplicatedCode
 
 /**
- * Author: Amin Abbaspour
- * Date: 2023-11-22
+ * Author: Amin Abbaspour, Jes Mostek, Carlos Mostek
+ * Date: 2024-08-02
  * License: MIT (https://github.com/auth0/actions-gallery/blob/main/LICENSE)
  *
- * Generic Action showing how to perform a nested authorisation transaction.
+ * Generic Action showing how to perform a nested authorization transaction.
  * With nested transactions can build various functionalities on top of Auth0 UL without any server side or companions apps
  * For example you can use this to validated credentials, change password on next login, etc
  *
  * In this example, we are re-authenticating a social account with credential DB and link them.
  *
- * NOTE: `domain/continue` should be among allowed callback URLs of your client.
+ * You must configure an "Account Linking Application" for performing the account linking
+ *       (https://auth0.com/docs/get-started/auth0-overview/create-applications). Even though this application doesn't exist
+ *       outside of the context of Universal Login, it will help keep a separation of concerns. You must grant this separate client
+ *       the update:users scope for the management API. This application must be configured as a regular web app so it requires
+ *       a client secret
+ *
+ * NOTE: `domain/continue` should be among allowed callback URLs of this application.
  *
  * @param event https://auth0.com/docs/customize/actions/flows-and-triggers/login-flow/event-object
  * @param api https://auth0.com/docs/customize/actions/flows-and-triggers/login-flow/api-object
@@ -22,11 +28,22 @@
  *  - axios@1.6.2
  *  - jsonwebtoken@9.0.2
  *  - auth0@4.1.0
+ *  - jwks-rsa@latest
+ *
+ * Secrets:
+ *   domain: The canonical domain of the tenant. e.g. mytenantname.us.auth0.com
+ *   clientId: The client ID for the Account Linking Application referenced above
+ *   clientSecret: The client secret for the Account Linking Application referenced above
+ *
+ * SAFE HARBOR: This is sample code to demonstrate a concept, it is not battle tested production code that can just be copy and pasted to your
+ *              production environment. Before releasing into production you should add the appropriate testing, error handling, and edge
+ *              case protections as per your use case.
+ *
  */
 const interactive_login = new RegExp('^oidc-');
 const database_sub = new RegExp('^auth0|');
 
-async function exchangeAndVerify(api, domain, client_id, redirect_uri, code, nonce) {
+async function exchangeAndVerify(api, domain, client_id, client_secret, redirect_uri, code, nonce) {
 
     const axios = require('axios');
 
@@ -38,6 +55,7 @@ async function exchangeAndVerify(api, domain, client_id, redirect_uri, code, non
             url: `https://${domain}/oauth/token`,
             data: {
                 client_id,
+                client_secret,
                 code,
                 grant_type: 'authorization_code',
                 redirect_uri
@@ -104,7 +122,7 @@ async function linkAndMakePrimary(event, api, primary_sub) {
 
     const {ManagementClient, AuthenticationClient} = require('auth0');
 
-    const domain = event?.secrets?.domain || event.request?.hostname;
+    const domain = event?.secrets?.domain;
 
     let {value: token} = api.cache.get('management-token') || {};
 
@@ -135,8 +153,6 @@ async function linkAndMakePrimary(event, api, primary_sub) {
         }
     }
 
-    //console.log(`m2m token: ${token}`);
-
     const client = new ManagementClient({domain, token});
 
     const {user_id, provider} = event.user.identities[0];
@@ -164,6 +180,18 @@ exports.onExecutePostLogin = async (event, api) => {
 
     //console.log(JSON.stringify(event));
 
+    /**
+     * This code is for demonstration purposes only. For your actual implementation, you must ensure that you are doing the following:
+     *   1) Make sure that you are only calling the management API when absolutely necessary. It would be much better to do a search for
+     *      other users with the same email address only once per user and record that information in metadata for both users. Then only force
+     *      linking when one of those users signs in.
+     *   2) As this action demonstrates, you MUST ensure the user can sign into BOTH accounts before linking the users.
+     *   3) You will need to use page templates or custom text to ensure that the user understands that they are signing into the second
+     *      account to link accounts. You could also accomplish this through a Form for Action if desired, though that is not demonstrated here.
+     *   4) As per the SAFE HARBOR statement at the beginning of this action, you must do additional error handling, edge case handling, and security
+     *      review before this action is production ready.
+     */
+
     const protocol = event?.transaction?.protocol || 'unknown';
 
     if (!interactive_login.test(protocol)) {
@@ -184,9 +212,9 @@ exports.onExecutePostLogin = async (event, api) => {
 
     const auth0 = require('auth0-js');
 
-    const domain = event?.secrets?.domain || event.request?.hostname;
+    const domain = event.request?.hostname; // must grab the hostname from the request so this works with both the custom domain and the canonical domain
 
-    const authClient = new auth0.Authentication({domain, clientID: event.client.client_id});
+    const authClient = new auth0.Authentication({domain, clientID: event.secrets.clientId});
 
     const nonce = event.transaction.id;
     console.log(`nonce for inner tx: ${nonce}`);
@@ -196,11 +224,9 @@ exports.onExecutePostLogin = async (event, api) => {
         nonce,
         responseType: 'code',
         prompt: 'login',
-        connection: 'Users',
+        connection: 'Username-Password-Authentication',
         login_hint: event.user.email,
         scope: 'openid profile email',
-        //responseMode: 'form_post' // Auth0 wants `state` in query parameter, hence we can't do form_post :(
-        // TODO: PKCE
     });
 
     console.log(`redirecting to ${nestedAuthorizeURL}`);
@@ -223,7 +249,8 @@ exports.onContinuePostLogin = async (event, api) => {
 
     const {code} = event.request.query;
 
-    const id_token = await exchangeAndVerify(api, domain, event.client.client_id, `https://${domain}/continue`, code, event.transaction.id);
+    // Use the Account Linking Application's client ID and secret
+    const id_token = await exchangeAndVerify(api, domain, event.secrets.clientId, event.secrets.clientSecret, `https://${domain}/continue`, code, event.transaction.id);
 
     //console.log(`code: ${code}, id_token: ${JSON.stringify(id_token)}`);
 
@@ -237,7 +264,7 @@ exports.onContinuePostLogin = async (event, api) => {
         return;
     }
 
-    /*
+    /* If you are only linking users with the same email, you can uncomment this
     if (event.user.email !== id_token.email) {
         api.access.deny('emails do not match');
         return;
