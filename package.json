@@ -21,7 +21,9 @@
     "lodash": "^4.17.21",
     "lodash.merge": "^4.6.2",
     "nodemailer": "^6.9.7",
-    "twilio": "^4.20.0"
+    "twilio": "^4.20.0",
+    "xml-crypto": "^6.0.0",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
