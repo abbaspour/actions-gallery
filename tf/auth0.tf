@@ -23,7 +23,7 @@ resource "auth0_connection" "users" {
   }
 }
 
-resource "auth0_connection" "google" {
+resource "auth0_connection" "google-social" {
   name = "google-oauth2"
   strategy = "google-oauth2"
 
@@ -41,7 +41,7 @@ resource "auth0_connection" "facebook" {
 
 # simple SPA client
 resource "auth0_client" "spa" {
-  name = "SPA"
+  name = "JWT.io"
   description = "Gallery SPA client"
   app_type = "spa"
   oidc_conformant = true
@@ -66,7 +66,7 @@ resource "auth0_connection_clients" "users_clients" {
 }
 
 resource "auth0_connection_clients" "google_clients" {
-  connection_id   = auth0_connection.google.id
+  connection_id   = auth0_connection.google-social.id
   enabled_clients = [auth0_client.spa.id]
 }
 

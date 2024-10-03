@@ -53,6 +53,7 @@ resource "auth0_action" "new_device_login_notify_user" {
   }
 }
 
+/*
 resource "auth0_trigger_actions" "login_flow" {
   trigger = "post-login"
 
@@ -61,3 +62,4 @@ resource "auth0_trigger_actions" "login_flow" {
     display_name = auth0_action.new_device_login_notify_user.name
   }
 }
+*/
