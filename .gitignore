@@ -1,5 +1,6 @@
 node_modules
 package-lock.json
+*.json
 .idea
 .terraform.lock*
 *.plan
