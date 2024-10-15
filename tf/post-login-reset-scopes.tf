@@ -30,6 +30,7 @@ resource "auth0_action" "reset-scopes" {
 }
 
 
+/*
 resource "auth0_trigger_actions" "login_flow" {
   trigger = "post-login"
 
@@ -38,7 +39,7 @@ resource "auth0_trigger_actions" "login_flow" {
     display_name = auth0_action.reset-scopes.name
   }
 }
-
+*/
 
 ## outputs
 output "spa_login_url_my_rs" {
