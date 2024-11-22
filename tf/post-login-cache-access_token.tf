@@ -34,6 +34,7 @@ resource "auth0_action" "cache-access_token" {
 
 
 
+/*
 resource "auth0_trigger_actions" "login_flow" {
   trigger = "post-login"
 
@@ -42,3 +43,4 @@ resource "auth0_trigger_actions" "login_flow" {
     display_name = auth0_action.cache-access_token.name
   }
 }
+*/

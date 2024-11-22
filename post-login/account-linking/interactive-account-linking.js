@@ -47,7 +47,7 @@ async function exchangeAndVerify(api, domain, client_id, client_secret, redirect
 
     const axios = require('axios');
 
-    //console.log(`exchanging code: ${code}`);
+    console.log(`exchanging code: ${code}`);
 
     const {data: {id_token}} =
         await axios({
@@ -66,7 +66,7 @@ async function exchangeAndVerify(api, domain, client_id, client_secret, redirect
             timeout: 5000 // 5 sec
         });
 
-    //console.log(`id_token: ${id_token}`);
+    console.log(`id_token: ${id_token}`);
 
     const jwt = require('jsonwebtoken');
 
@@ -178,7 +178,7 @@ async function linkAndMakePrimary(event, api, primary_sub) {
  */
 exports.onExecutePostLogin = async (event, api) => {
 
-    //console.log(JSON.stringify(event));
+    console.log(JSON.stringify(event));
 
     /**
      * This code is for demonstration purposes only. For your actual implementation, you must ensure that you are doing the following:
@@ -212,7 +212,8 @@ exports.onExecutePostLogin = async (event, api) => {
 
     const auth0 = require('auth0-js');
 
-    const domain = event.request?.hostname; // must grab the hostname from the request so this works with both the custom domain and the canonical domain
+    const domain = event?.secrets?.domain || event.request?.hostname;
+    const database = event?.secrets?.database || 'Username-Password-Authentication';
 
     const authClient = new auth0.Authentication({domain, clientID: event.secrets.clientId});
 
@@ -224,7 +225,7 @@ exports.onExecutePostLogin = async (event, api) => {
         nonce,
         responseType: 'code',
         prompt: 'login',
-        connection: 'Username-Password-Authentication',
+        connection: database,
         login_hint: event.user.email,
         scope: 'openid profile email',
     });
@@ -243,7 +244,7 @@ exports.onExecutePostLogin = async (event, api) => {
  * @param {PostLoginAPI} api - Interface whose methods can be used to change the behavior of the login.
  */
 exports.onContinuePostLogin = async (event, api) => {
-    //console.log(`onContinuePostLogin event: ${JSON.stringify(event)}`);
+    console.log(`onContinuePostLogin event: ${JSON.stringify(event)}`);
 
     const domain = event?.secrets?.domain || event.request?.hostname;
 
