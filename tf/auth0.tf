@@ -12,19 +12,19 @@ data "auth0_resource_server" "api_v2" {
 
 # Users DB
 resource "auth0_connection" "users" {
-  name = "Users"
+  name     = "Users"
   strategy = "auth0"
 
   options {
-    requires_username = false
-    password_policy = "low"
-    disable_signup = false
+    requires_username      = false
+    password_policy        = "low"
+    disable_signup         = false
     brute_force_protection = true
   }
 }
 
 resource "auth0_connection" "google-social" {
-  name = "google-oauth2"
+  name     = "google-oauth2"
   strategy = "google-oauth2"
 
   options {
@@ -32,7 +32,7 @@ resource "auth0_connection" "google-social" {
 }
 
 resource "auth0_connection" "facebook" {
-  name = "facebook"
+  name     = "facebook"
   strategy = "facebook"
 
   options {
@@ -41,11 +41,11 @@ resource "auth0_connection" "facebook" {
 
 # simple SPA client
 resource "auth0_client" "spa" {
-  name = "JWT.io"
-  description = "Gallery SPA client"
-  app_type = "spa"
+  name            = "JWT.io"
+  description     = "Gallery SPA client"
+  app_type        = "spa"
   oidc_conformant = true
-  is_first_party = true
+  is_first_party  = true
 
   callbacks = [
     "https://jwt.io"
@@ -61,17 +61,17 @@ resource "auth0_client" "spa" {
 
 # Connection vs Clients
 resource "auth0_connection_clients" "users_clients" {
-  connection_id   = auth0_connection.users.id
-  enabled_clients = [auth0_client.spa.id, var.auth0_tf_client_id]
+  connection_id = auth0_connection.users.id
+  enabled_clients = [auth0_client.spa.id, var.auth0_tf_client_id, auth0_client.account-linking-application.id]
 }
 
 resource "auth0_connection_clients" "google_clients" {
-  connection_id   = auth0_connection.google-social.id
+  connection_id = auth0_connection.google-social.id
   enabled_clients = [auth0_client.spa.id]
 }
 
 resource "auth0_connection_clients" "facebook_clients" {
-  connection_id   = auth0_connection.facebook.id
+  connection_id = auth0_connection.facebook.id
   enabled_clients = [auth0_client.spa.id]
 }
 
@@ -79,29 +79,29 @@ resource "auth0_connection_clients" "facebook_clients" {
 resource "auth0_user" "user_1" {
   depends_on = [auth0_connection_clients.users_clients]
   connection_name = auth0_connection.users.name
-  email = "user1@atko.email"
-  password = var.default_password
+  email           = "user1@atko.email"
+  password        = var.default_password
 }
 
 resource "auth0_user" "user_2" {
   depends_on = [auth0_connection_clients.users_clients]
   connection_name = auth0_connection.users.name
-  email = "user2@atko.email"
-  password = var.default_password
+  email           = "user2@atko.email"
+  password        = var.default_password
 }
 
 resource "auth0_user" "user_3" {
   depends_on = [auth0_connection_clients.users_clients]
   connection_name = auth0_connection.users.name
-  email = "a.abbaspour@gmail.com"
-  password = var.default_password
-  email_verified = true
+  email           = "a.abbaspour@gmail.com"
+  password        = var.default_password
+  email_verified  = true
 }
 
 ## Email Server
 resource "auth0_email_provider" "mailtrap" {
-  name = "smtp"
-  enabled = true
+  name                 = "smtp"
+  enabled              = true
   default_from_address = "noreply@actions-gallery.co"
   credentials {
     smtp_host = var.mailtrap_smtp_host
