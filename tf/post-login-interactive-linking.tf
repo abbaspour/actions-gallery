@@ -85,6 +85,7 @@ resource "auth0_action" "interactive_account_linking" {
 }
 
 
+/*
 resource "auth0_trigger_actions" "login_flow" {
   trigger = "post-login"
 
@@ -93,3 +94,4 @@ resource "auth0_trigger_actions" "login_flow" {
     display_name = auth0_action.interactive_account_linking.name
   }
 }
+*/

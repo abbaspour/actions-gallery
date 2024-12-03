@@ -16,7 +16,7 @@ resource "auth0_action" "crm_fetch_customer_id" {
 }
 
 /*
-resource "auth0_trigger_actions" "register_deny_list" {
+resource "auth0_trigger_actions" "pre-user-registration" {
   trigger = "pre-user-registration"
 
   actions {

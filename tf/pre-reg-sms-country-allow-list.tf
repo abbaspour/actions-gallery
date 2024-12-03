@@ -16,7 +16,8 @@ resource "auth0_action" "sms_country_allow_list" {
 
 }
 
-resource "auth0_trigger_actions" "sms_country_allow_list" {
+/*
+resource "auth0_trigger_actions" "pre-user-registration" {
   trigger = "pre-user-registration"
 
   actions {
@@ -24,3 +25,4 @@ resource "auth0_trigger_actions" "sms_country_allow_list" {
     display_name = auth0_action.sms_country_allow_list.name
   }
 }
+*/
