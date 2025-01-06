@@ -99,6 +99,8 @@ resource "auth0_user" "user_3" {
 }
 
 ## Email Server
+/*
+// commented in favour of custom email provider action
 resource "auth0_email_provider" "mailtrap" {
   name                 = "smtp"
   enabled              = true
@@ -110,6 +112,7 @@ resource "auth0_email_provider" "mailtrap" {
     smtp_pass = var.mailtrap_smtp_pass
   }
 }
+*/
 
 ## SMS gateway
 /*

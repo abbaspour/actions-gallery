@@ -46,20 +46,20 @@ variable "redis_endpoint" {
   type = string
 }
 
+/*
 variable "redis_username" {
   type = string
   default = "default"
 }
+*/
 
 variable "redis_password" {
   type = string
   sensitive = true
 }
 
-/*
 # slack
 variable "slack_webhook_url" {
   type = string
   sensitive = true
 }
-*/
