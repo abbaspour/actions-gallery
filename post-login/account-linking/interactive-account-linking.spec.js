@@ -33,6 +33,8 @@ describe('onExecutePostLogin', () => {
             },
             secrets: {
                 domain: 'test.auth0.com',
+                clientId: 'testClientId',
+                database: 'Users'
             },
         };
 
@@ -51,7 +53,7 @@ describe('onExecutePostLogin', () => {
         // Expect sendUserTo to be called with the correct URL
         expect(mockApi.redirect.sendUserTo).toHaveBeenCalledWith(
             // eslint-disable-next-line
-            expect.stringContaining('https://test.auth0.com/authorize?client_id=testClientId&redirect_uri=https%3A%2F%2Ftest.auth0.com%2Fcontinue&nonce=tx-id&response_type=code&prompt=login&connection=Users&login_hint=test%40example.com&scope=openid%20profile%20email&auth0Client=eyJuYW1lIjoiYXV0aDAuanMiLCJ2ZXJzaW9uIjoiOS4yNC4wIn0%3D')
+            expect.stringContaining('https://test.auth0.com/authorize?client_id=testClientId&redirect_uri=https%3A%2F%2Ftest.auth0.com%2Fcontinue&nonce=tx-id&response_type=code&prompt=login&connection=Users&login_hint=test%40example.com&scope=openid%20profile%20email&auth0Client=eyJuYW1lIjoiYXV0aDAuanMiLCJ2ZXJzaW9uIjoiOS4yMy4zIn0%3D')
         );
     });
 
