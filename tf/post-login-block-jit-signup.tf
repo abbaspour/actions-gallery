@@ -31,6 +31,7 @@ resource "auth0_action" "block-jit-signup" {
 
 }
 
+/*
 resource "auth0_trigger_actions" "login_flow" {
   trigger = "post-login"
 
@@ -39,3 +40,4 @@ resource "auth0_trigger_actions" "login_flow" {
     display_name = auth0_action.block-jit-signup.name
   }
 }
+*/

@@ -62,17 +62,28 @@ resource "auth0_client" "spa" {
 # Connection vs Clients
 resource "auth0_connection_clients" "users_clients" {
   connection_id = auth0_connection.users.id
-  enabled_clients = [auth0_client.spa.id, var.auth0_tf_client_id, auth0_client.account-linking-application.id]
+  enabled_clients = [
+    auth0_client.spa.id,
+    var.auth0_tf_client_id,
+    auth0_client.account-linking-application.id,
+    auth0_client.account_linking_companion_app.id
+  ]
 }
 
 resource "auth0_connection_clients" "google_clients" {
   connection_id = auth0_connection.google-social.id
-  enabled_clients = [auth0_client.spa.id]
+  enabled_clients = [
+    auth0_client.spa.id,
+    auth0_client.account_linking_companion_app.id
+  ]
 }
 
 resource "auth0_connection_clients" "facebook_clients" {
   connection_id = auth0_connection.facebook.id
-  enabled_clients = [auth0_client.spa.id]
+  enabled_clients = [
+    auth0_client.spa.id,
+    auth0_client.account_linking_companion_app.id
+  ]
 }
 
 ## Users
@@ -139,7 +150,6 @@ resource "auth0_connection" "sms" {
 }
 */
 
-## outputs
 ## outputs
 output "spa_login_url" {
   value = join("&", [
