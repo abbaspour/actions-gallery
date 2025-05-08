@@ -26,7 +26,7 @@ const mapEnrolledToFactors = (user) => user.enrolledFactors.map(f => (f.method =
 const makeNonce = (event) =>
     crypto.createHash('sha256').update(event.user.user_id + event.request.ip).digest('hex').substring(0, 32);
 
-const SCOPES = { LINK: 'link_account', UNLINK: 'unlink_account' };
+const SCOPES = {LINK: 'link_account', UNLINK: 'unlink_account'};
 const RESOURCE_SERVER = 'my-account';
 
 exports.onExecutePostLogin = async (event, api) => {
@@ -347,14 +347,14 @@ async function exchange(api, domain, client_id, client_secret, code, redirect_ur
 
     const {data: {id_token}} = await axios({
         method: 'post',
-url: `https://${domain}/oauth/token`,
-data: {
+        url: `https://${domain}/oauth/token`,
+        data: {
             client_id, client_secret, code, grant_type: 'authorization_code', redirect_uri
         },
-headers: {
+        headers: {
             'Content-Type': 'application/json'
         },
-timeout: 5000 // 5 sec TODO configurable
+        timeout: 5000 // 5 sec TODO configurable
     });
 
     console.log('account linking continue id_token string exchange completed');
@@ -368,7 +368,7 @@ timeout: 5000 // 5 sec TODO configurable
 
 async function unlink(event, api, sub) {
 
-    const { provider: connection, user_id: user_id_to_unlink} = splitSubClaim(sub);
+    const {provider: connection, user_id: user_id_to_unlink} = splitSubClaim(sub);
 
     console.log(`unlink connection: ${connection}, user_id_to_unlink: ${user_id_to_unlink}`);
 
@@ -382,7 +382,7 @@ async function unlink(event, api, sub) {
     const primary_id = event.user.user_id;
     const unlink_id = unlinkIdentities[0].user_id;
 
-    console.log(`client initiated unlink Identity: ${  primary_id}`, connection, unlink_id);
+    console.log(`client initiated unlink Identity: ${primary_id}`, connection, unlink_id);
 
     const client = await getManagementClient(event, api);
 

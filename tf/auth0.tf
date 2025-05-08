@@ -57,6 +57,8 @@ resource "auth0_client" "spa" {
   jwt_configuration {
     alg = "RS256"
   }
+
+  organization_usage = "allow"
 }
 
 # Connection vs Clients
@@ -151,6 +153,10 @@ resource "auth0_connection" "sms" {
 */
 
 ## outputs
+output "spa_client_id" {
+  value = auth0_client.spa.client_id
+}
+
 output "spa_login_url" {
   value = join("&", [
     "https://${var.auth0_domain}/authorize?client_id=${auth0_client.spa.id}",

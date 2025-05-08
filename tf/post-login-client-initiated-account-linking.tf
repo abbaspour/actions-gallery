@@ -79,6 +79,7 @@ data "auth0_client" "account_linking_companion_app" {
   client_id = auth0_client.account_linking_companion_app.client_id
 }
 
+/*
 resource "auth0_trigger_actions" "account_account_linking_trigger" {
   trigger = "post-login"
 
@@ -87,7 +88,7 @@ resource "auth0_trigger_actions" "account_account_linking_trigger" {
     display_name = auth0_action.account_linking.name
   }
 }
-
+*/
 
 output "par_linking_companion_app_id" {
   value = auth0_client.account_linking_companion_app.client_id
