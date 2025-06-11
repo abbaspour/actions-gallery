@@ -38,6 +38,7 @@ resource "auth0_organization_connections" "saas-abc-connections" {
   }
 }
 
+/*
 resource "auth0_trigger_actions" "login_flow" {
   trigger = "post-login"
 
@@ -46,6 +47,7 @@ resource "auth0_trigger_actions" "login_flow" {
     display_name = auth0_action.limit-org-to-domain.name
   }
 }
+*/
 
 output "saas-abc-org-id" {
   value = auth0_organization.saas-abc.id

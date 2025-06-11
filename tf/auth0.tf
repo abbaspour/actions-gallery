@@ -28,6 +28,8 @@ resource "auth0_connection" "google-social" {
   strategy = "google-oauth2"
 
   options {
+    client_id = var.google-social-client_id
+    client_secret = var.google-social-client_secret
   }
 }
 

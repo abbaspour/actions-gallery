@@ -63,3 +63,13 @@ variable "slack_webhook_url" {
   type = string
   sensitive = true
 }
+
+# google
+variable "google-social-client_id" {
+  type = string
+}
+
+variable "google-social-client_secret" {
+  type = string
+  sensitive = true
+}
