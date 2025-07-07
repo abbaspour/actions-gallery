@@ -42,6 +42,7 @@ resource "auth0_trigger_actions" "login_flow" {
 */
 
 ## outputs
+/*
 output "spa_login_url_my_rs" {
   value = join("&", [
     "https://${var.auth0_domain}/authorize?client_id=${auth0_client.spa.id}",
@@ -53,4 +54,4 @@ output "spa_login_url_my_rs" {
   ]
   )
 }
-
+*/

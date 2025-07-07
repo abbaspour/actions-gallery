@@ -1,3 +1,4 @@
+/*
 resource "auth0_email_provider" "custom_email_provider" {
   name                 = "custom"
   enabled              = true
@@ -29,3 +30,4 @@ resource "auth0_action" "email_to_slack" {
     value = var.slack_webhook_url
   }
 }
+*/
