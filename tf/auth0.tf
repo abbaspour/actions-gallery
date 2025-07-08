@@ -91,7 +91,7 @@ resource "auth0_connection_clients" "facebook_clients" {
 }
 
 ## Users
-/*
+/* bloody MCD
 resource "auth0_user" "user_1" {
   depends_on = [auth0_connection_clients.users_clients]
   connection_name = auth0_connection.users.name
