@@ -15,7 +15,7 @@ const crypto = require('crypto');
 exports.onExecutePostLogin = async (event, api) => {
     const uuid = crypto.randomUUID().toString();
     console.log(`setting tx metadata to ${uuid}`);
-    api.transaction.setMetadata('uuid', uuid);
+    api.transaction.setMetadata('uuid', { uuid });
 
     /*
     const domain = event.request?.hostname;

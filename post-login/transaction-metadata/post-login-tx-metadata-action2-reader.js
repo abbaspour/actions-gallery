@@ -9,7 +9,7 @@
  * @param {PostLoginAPI} api - Interface whose methods can be used to change the behavior of the login.
  */
 exports.onExecutePostLogin = async (event, api) => {
-    const uuid = event?.transaction?.metadata?.uuid;
+    const { uuid } = event?.transaction?.metadata?.uuid;
     console.log(`received tx metadata ${uuid}`);
     api.idToken.setCustomClaim('a2-uuid', uuid);
 };
