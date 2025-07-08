@@ -91,6 +91,7 @@ resource "auth0_connection_clients" "facebook_clients" {
 }
 
 ## Users
+/* bloody MCD
 resource "auth0_user" "user_1" {
   depends_on = [auth0_connection_clients.users_clients]
   connection_name = auth0_connection.users.name
@@ -112,7 +113,7 @@ resource "auth0_user" "user_3" {
   password        = var.default_password
   email_verified  = true
 }
-
+*/
 ## Email Server
 /*
 // commented in favour of custom email provider action
@@ -159,6 +160,7 @@ output "spa_client_id" {
   value = auth0_client.spa.client_id
 }
 
+/*
 output "spa_login_url" {
   value = join("&", [
     "https://${var.auth0_domain}/authorize?client_id=${auth0_client.spa.id}",
@@ -171,4 +173,4 @@ output "spa_login_url" {
   ]
   )
 }
-
+*/
