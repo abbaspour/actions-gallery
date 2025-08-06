@@ -6,10 +6,13 @@ test: node_modules
 lint: node_modules
 	pnpm run lint
 
+build: node_modules
+	pnpm run build
+
 node_modules: package.json
 	pnpm i
 
 clean:
 	rm -rf node_modules
 
-.PHONY: test install clean lint
+.PHONY: test install clean lint build

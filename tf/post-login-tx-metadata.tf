@@ -22,8 +22,7 @@ resource "auth0_action" "tx_metadata_2" {
   }
 }
 
-
-
+/*
 resource "auth0_trigger_actions" "login_flow" {
   trigger = "post-login"
 
@@ -37,4 +36,4 @@ resource "auth0_trigger_actions" "login_flow" {
     display_name = auth0_action.tx_metadata_2.name
   }
 }
-
+*/

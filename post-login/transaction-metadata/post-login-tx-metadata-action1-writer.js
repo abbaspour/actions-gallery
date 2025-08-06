@@ -1,3 +1,5 @@
+/// <reference types="@auth0/actions/post-login/v3/globals" />
+
 /**
  * Transaction Metadata demo
  *
@@ -15,9 +17,8 @@ const crypto = require('crypto');
 exports.onExecutePostLogin = async (event, api) => {
     const uuid = crypto.randomUUID().toString();
     console.log(`setting tx metadata to ${uuid}`);
-    api.transaction.setMetadata('uuid', { uuid });
+    api.transaction.setMetadata('uuid', uuid);
 
-    /*
     const domain = event.request?.hostname;
 
     const continueUrl = `https://${domain}/continue`;
@@ -26,7 +27,6 @@ exports.onExecutePostLogin = async (event, api) => {
     console.log(`redirecting to ${redirectUrl}`);
 
     api.redirect.sendUserTo(redirectUrl);
-    */
 
     //api.authentication.challengeWithAny([{type: 'otp'}]);
 
