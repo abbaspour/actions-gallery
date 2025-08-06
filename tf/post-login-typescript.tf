@@ -8,6 +8,11 @@ resource "auth0_action" "typescript" {
     id      = "post-login"
     version = "v3"
   }
+
+  secrets {
+    name  = "MY_SECRET"
+    value = "typescript-works"
+  }
 }
 
 resource "auth0_trigger_actions" "login_flow" {
