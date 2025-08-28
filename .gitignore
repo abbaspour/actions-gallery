@@ -7,3 +7,4 @@ package-lock.json
 .terraform/
 terraform.auto.tfvars
 *.tfstate*
+dist/
