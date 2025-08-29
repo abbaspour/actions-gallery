@@ -2,7 +2,7 @@ terraform {
   required_providers {
     auth0 = {
       source  = "auth0/auth0"
-      version = "~> 1.21"
+      version = "~> 1.27"
     }
     local = {
       source = "hashicorp/local"
