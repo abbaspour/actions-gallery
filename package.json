@@ -26,7 +26,8 @@
     "nodemailer": "^6.9.7",
     "twilio": "^4.20.0",
     "xml-crypto": "^6.0.0",
-    "xml2js": "^0.6.2"
+    "xml2js": "^0.6.2",
+    "@hubspot/api-client": "^13.1.0"
   },
   "devDependencies": {
     "@auth0/actions": "^0.1.1-internal.0",

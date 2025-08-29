@@ -1,5 +1,3 @@
-const { jwtDecode } = require('jose');
-
 /**
  *
  * @param {import('@auth0/actions/custom-token-exchange/v1').Event} event
@@ -8,14 +6,16 @@ const { jwtDecode } = require('jose');
  */
 exports.onExecuteCustomTokenExchange = async (event, api) => {
 
-    // 1. Validate subject_token
-    const profile = jwtDecode(event.transaction.subject_token);
+    console.log('onExecuteCustomTokenExchange', event);
 
-    console.log(profile);
+    const jose = require('jose');
+
+    // 1. Validate subject_token
+    const profile = jose.decodeJwt(event.transaction.subject_token);
 
     // 2. Set the user for the transaction
     api.authentication.setUserByConnection(
-        'My Connection',
+        'Username-Password-Authentication',
         {
             user_id: profile.sub,
             email: profile.email,
@@ -31,7 +31,7 @@ exports.onExecuteCustomTokenExchange = async (event, api) => {
         },
         {
             creationBehavior: 'create_if_not_exists',
-            updateBehavior: 'none'
+            updateBehavior: 'replace'
         }
     );
 

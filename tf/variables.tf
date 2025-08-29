@@ -73,3 +73,10 @@ variable "google-social-client_secret" {
   type = string
   sensitive = true
 }
+
+# hubspot
+variable "hubspot_private_app_access_token" {
+  type        = string
+  description = "HubSpot Private App Access Token for Actions"
+  sensitive   = true
+}

@@ -9,6 +9,15 @@ data "auth0_resource_server" "api_v2" {
   identifier = "https://${var.auth0_domain}/api/v2/"
 }
 
+# Username-Password-Authentication
+data "auth0_connection" "Username-Password-Authentication" {
+  name = "Username-Password-Authentication"
+}
+
+data "auth0_client" "Default-App" {
+  name = "Default App"
+}
+
 
 # Users DB
 resource "auth0_connection" "users" {
@@ -28,7 +37,7 @@ resource "auth0_connection" "google-social" {
   strategy = "google-oauth2"
 
   options {
-    client_id = var.google-social-client_id
+    client_id     = var.google-social-client_id
     client_secret = var.google-social-client_secret
   }
 }
@@ -61,6 +70,10 @@ resource "auth0_client" "spa" {
   }
 
   organization_usage = "allow"
+
+  token_exchange {
+    allow_any_profile_of_type = [auth0_token_exchange_profile.jit-user_exchange_profile.type]
+  }
 }
 
 # Connection vs Clients
@@ -90,30 +103,41 @@ resource "auth0_connection_clients" "facebook_clients" {
   ]
 }
 
+resource "auth0_connection_clients" "UPA_clients" {
+  connection_id = data.auth0_connection.Username-Password-Authentication.id
+  enabled_clients = [
+    auth0_client.spa.id,
+    data.auth0_client.Default-App.client_id,
+    var.auth0_tf_client_id
+  ]
+}
+
 ## Users
-/* bloody MCD
 resource "auth0_user" "user_1" {
-  depends_on = [auth0_connection_clients.users_clients]
+  depends_on      = [auth0_connection_clients.users_clients]
   connection_name = auth0_connection.users.name
   email           = "user1@atko.email"
   password        = var.default_password
+  custom_domain_header = "ag1.authlab.work"
 }
 
 resource "auth0_user" "user_2" {
-  depends_on = [auth0_connection_clients.users_clients]
+  depends_on      = [auth0_connection_clients.users_clients]
   connection_name = auth0_connection.users.name
   email           = "user2@atko.email"
   password        = var.default_password
+  custom_domain_header = "ag1.authlab.work"
 }
 
 resource "auth0_user" "user_3" {
-  depends_on = [auth0_connection_clients.users_clients]
+  depends_on      = [auth0_connection_clients.users_clients]
   connection_name = auth0_connection.users.name
   email           = "a.abbaspour@gmail.com"
   password        = var.default_password
   email_verified  = true
+  custom_domain_header = "ag1.authlab.work"
 }
-*/
+
 ## Email Server
 /*
 // commented in favour of custom email provider action

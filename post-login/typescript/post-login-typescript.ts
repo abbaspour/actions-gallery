@@ -6,7 +6,7 @@ declare module '@auth0/actions/post-login/v3' {
     }
 }
 exports.onExecutePostLogin = async (event: Event, api: PostLoginAPI) => {
-    console.log(event);
+    console.log("onExecutePostLogin", event);
     api.idToken.setCustomClaim('key', 'value');
     api.idToken.setCustomClaim('secret', event.secrets.MY_SECRET);
 }
