@@ -80,3 +80,20 @@ variable "hubspot_private_app_access_token" {
   description = "HubSpot Private App Access Token for Actions"
   sensitive   = true
 }
+
+# airtable
+variable "airtable_personal_access_token" {
+  type        = string
+  description = "Airtable Personal Access Token for Actions"
+  sensitive   = true
+}
+
+variable "airtable_base_id" {
+  type        = string
+  description = "Airtable Base ID containing Users table"
+}
+
+variable "airtable_users_table_id" {
+  type        = string
+  description = "Airtable Users table name or ID"
+}

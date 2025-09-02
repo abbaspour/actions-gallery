@@ -1,7 +1,7 @@
 resource "auth0_action" "hubspot_create_contact" {
   name    = "Create HubSpot Contact on Pre-Registration"
   runtime = "node22"
-  deploy  = true
+  deploy  = false
   code    = file("../pre-registration/pre-reg-hubspot-create-contact.js")
 
   supported_triggers {
