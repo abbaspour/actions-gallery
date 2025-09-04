@@ -72,7 +72,7 @@ exports.onExecutePreUserRegistration = async (event, api) => {
 
     // Prepare fields object for Airtable. Adjust to common field names.
     const fields = {
-      Email: email,
+      email: email,
     };
     if (first) fields['First Name'] = first;
     if (last) fields['Last Name'] = last;
@@ -86,7 +86,7 @@ exports.onExecutePreUserRegistration = async (event, api) => {
       const select = base(tableId).select({
         pageSize: 1,
         maxRecords: 1,
-        filterByFormula: `LOWER({Email}) = '${String(email).toLowerCase().replace(/'/g, '\'\'')}'`
+        filterByFormula: `LOWER({email}) = '${String(email).toLowerCase().replace(/'/g, '\'\'')}'`
       });
 
       const existing = await select.firstPage();
