@@ -11,12 +11,13 @@ resource "auth0_action" "register_client_deny_list" {
 }
 
 
+/*
 resource "auth0_trigger_actions" "pre-user-registration" {
   trigger = "pre-user-registration"
 
   actions {
-    id           = auth0_action.airtable_create_user.id
-    display_name = auth0_action.airtable_create_user.name
+    id           = auth0_action.register_client_deny_list.id
+    display_name = auth0_action.register_client_deny_list.name
   }
 }
-
+*/
