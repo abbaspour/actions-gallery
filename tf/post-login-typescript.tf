@@ -15,13 +15,3 @@ resource "auth0_action" "typescript" {
   }
 }
 
-resource "auth0_trigger_actions" "login_flow" {
-  trigger = "post-login"
-
-  actions {
-    id           = auth0_action.typescript.id
-    display_name = auth0_action.typescript.name
-  }
-
-}
-
