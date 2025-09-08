@@ -5,6 +5,9 @@ TF=terraform
 
 main: plan
 
+init:
+	@TF_LOG=$(LOG_LEVEL) $(TF) init -upgrade
+
 plan:
 	@TF_LOG=$(LOG_LEVEL) $(TF) plan -out $(PLAN_FILE)
 

@@ -26,6 +26,7 @@ resource "auth0_client_grant" "client-initiated-account-linking-application_upda
   client_id = auth0_client.account_linking_companion_app.client_id
   audience  = data.auth0_resource_server.api_v2.identifier
   scopes = ["update:users"]
+  subject_type = "client"
 }
 
 resource "auth0_action" "account_linking" {

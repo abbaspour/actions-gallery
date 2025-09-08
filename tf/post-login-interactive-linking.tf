@@ -20,6 +20,7 @@ resource "auth0_client_grant" "account-linking-application_update_users_scopes" 
   client_id = auth0_client.account-linking-application.client_id
   audience  = data.auth0_resource_server.api_v2.identifier
   scopes = ["update:users"]
+  subject_type = "client"
 }
 
 data "auth0_client" "account-linking-application" {
