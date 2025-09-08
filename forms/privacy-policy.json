@@ -1,0 +1,108 @@
+{
+  "version": "4.0.0",
+  "form": {
+    "name": "Custom policies",
+    "languages": {
+      "primary": "en"
+    },
+    "nodes": [
+      {
+        "id": "step_4iwC",
+        "type": "STEP",
+        "coordinates": {
+          "x": 92,
+          "y": -146
+        },
+        "alias": "Privacy policies",
+        "config": {
+          "components": [
+            {
+              "id": "rich_text_hPsU",
+              "category": "BLOCK",
+              "type": "RICH_TEXT",
+              "config": {
+                "content": "<h2>New policies update</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+              }
+            },
+            {
+              "id": "privacy_policies",
+              "category": "FIELD",
+              "type": "LEGAL",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "text": "<p>I agree to the <a href=\"https://www.auth0.com\" target=\"_blank\">Privacy Policy</a></p>"
+              }
+            },
+            {
+              "id": "next_button_YKS2",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "Continue"
+              }
+            }
+          ],
+          "next_node": "flow_NLtw"
+        }
+      },
+      {
+        "id": "flow_NLtw",
+        "type": "FLOW",
+        "coordinates": {
+          "x": 648,
+          "y": 51
+        },
+        "config": {
+          "flow_id": "#FLOW-1#",
+          "next_node": "$ending"
+        }
+      }
+    ],
+    "start": {
+      "next_node": "step_4iwC",
+      "coordinates": {
+        "x": -176,
+        "y": 34
+      }
+    },
+    "ending": {
+      "resume_flow": true,
+      "coordinates": {
+        "x": 1039,
+        "y": 27
+      }
+    }
+  },
+  "flows": {
+    "#FLOW-1#": {
+      "name": "Update app_metadata",
+      "actions": [
+        {
+          "id": "updateUser_j0M1",
+          "type": "AUTH0",
+          "action": "UPDATE_USER",
+          "allow_failure": false,
+          "mask_output": false,
+          "params": {
+            "connection_id": "#CONN-1#",
+            "user_id": "{{context.user.user_id}}",
+            "changes": {
+              "app_metadata": {
+                "privacy_policies": true,
+                "privacy_policies_timestamp": "{{ functions.toTimestamp() }}"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "connections": {
+    "#CONN-1#": {
+      "id": "ac_fYKstQgXdC4i2dMzVzxhLL",
+      "app_id": "AUTH0",
+      "name": "REPLACE_WITH_M2M_CONNECTION"
+    }
+  }
+}
