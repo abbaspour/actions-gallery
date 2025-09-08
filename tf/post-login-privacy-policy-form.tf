@@ -18,6 +18,11 @@ data "jq_query" "privacy_policy_form-ending" {
   query = ".form.ending"
 }
 
+data "jq_query" "privacy_policy_form-flow1" {
+  data = local.privacy_policy_form
+  query = ".flows[\"#FLOW-1#\"].actions"
+}
+
 # Create the form
 /*
 resource "auth0_form" "privacy_policy" {
@@ -51,6 +56,13 @@ resource "auth0_action" "render_privacy_policy_form-action" {
   }
 
 }
+
+/*
+resource "auth0_flow" "update_metadata_flow" {
+  name = "update_metadata_flow"
+  actions = data.jq_query.privacy_policy_form-flow1.result
+}
+*/
 
 # Output the action and form IDs
 /*
