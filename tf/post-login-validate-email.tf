@@ -29,7 +29,10 @@ data "auth0_connection" "email_connection" {
 
 resource "auth0_connection_clients" "comp_app_email_verify_clients" {
   connection_id   = data.auth0_connection.email_connection.id
-  enabled_clients = [auth0_client.companion_app_email_validation.id]
+  enabled_clients = [
+    auth0_client.companion_app_email_validation.id,
+    auth0_client.verify-pwdless-otp.client_id
+  ]
 }
 
 

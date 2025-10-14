@@ -1,5 +1,5 @@
 resource "auth0_client" "account_linking_companion_app" {
-  name        = "Accoubt linking companion client"
+  name        = "Account linking companion client"
   description = "RWA client for nexted TX and API2"
 
   app_type                              = "regular_web"

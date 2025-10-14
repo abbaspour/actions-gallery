@@ -2,7 +2,6 @@
 locals {
   flow_update_metadata          = jsondecode(file("${path.module}/../forms/privacy-policy.json"))["flows"]["#FLOW-1#"]
   form_privacy_policy          = jsondecode(file("${path.module}/../forms/privacy-policy.json"))["form"]
-
 }
 
 # Flow Vault Connection for Post-Login Privacy Policy Form
