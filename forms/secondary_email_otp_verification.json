@@ -1,0 +1,275 @@
+{
+  "version": "4.0.0",
+  "form": {
+    "name": "Secondary Email OTP verification",
+    "languages": {
+      "primary": "en"
+    },
+    "nodes": [
+      {
+        "id": "step_4iwC",
+        "type": "STEP",
+        "coordinates": {
+          "x": 70,
+          "y": -73
+        },
+        "alias": "Phone details",
+        "config": {
+          "components": [
+            {
+              "id": "rich_text_hPsU",
+              "category": "BLOCK",
+              "type": "RICH_TEXT",
+              "config": {
+                "content": "<h2>Enter your secondary Email</h2><p>A verification code will be sent to the email address you provide.</p>"
+              }
+            },
+            {
+              "id": "secondary_email",
+              "category": "FIELD",
+              "type": "EMAIL",
+              "label": "Email address",
+              "required": true,
+              "sensitive": false
+            },
+            {
+              "id": "next_button_YKS2",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "Continue"
+              }
+            }
+          ],
+          "next_node": "flow_3Qle"
+        }
+      },
+      {
+        "id": "step_qJEB",
+        "type": "STEP",
+        "coordinates": {
+          "x": 991,
+          "y": -120
+        },
+        "alias": "Phone details",
+        "config": {
+          "components": [
+            {
+              "id": "rich_text_Cqas",
+              "category": "BLOCK",
+              "type": "RICH_TEXT",
+              "config": {
+                "content": "<h2>Check your mailbox</h2><p>Please enter the 6-digit verification code that was sent to <strong>{{fields.secondary_email}}</strong>. The code is valid for 5 minutes.</p>"
+              }
+            },
+            {
+              "id": "verification_code",
+              "category": "FIELD",
+              "type": "NUMBER",
+              "label": "Verification code",
+              "required": true,
+              "sensitive": false
+            },
+            {
+              "id": "next_button_BtEe",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "Continue"
+              }
+            },
+            {
+              "id": "resend_button_fG99",
+              "category": "BLOCK",
+              "type": "RESEND_BUTTON",
+              "config": {
+                "active_text": "Didn't receive the code?",
+                "button_text": "Resend",
+                "waiting_text": "Resend in {{remaining_seconds}} seconds",
+                "text_alignment": "CENTER",
+                "flow_id": "#FLOW-1#",
+                "max_attempts": 3,
+                "waiting_time": 60
+              }
+            }
+          ],
+          "next_node": "flow_hq3b"
+        }
+      },
+      {
+        "id": "flow_hq3b",
+        "type": "FLOW",
+        "coordinates": {
+          "x": 1542,
+          "y": 46
+        },
+        "config": {
+          "flow_id": "#FLOW-2#",
+          "next_node": "$ending"
+        }
+      },
+      {
+        "id": "flow_3Qle",
+        "type": "FLOW",
+        "coordinates": {
+          "x": 625,
+          "y": 50
+        },
+        "alias": "passwordless-start",
+        "config": {
+          "flow_id": "#FLOW-1#",
+          "next_node": "step_qJEB"
+        }
+      }
+    ],
+    "start": {
+      "next_node": "step_4iwC",
+      "coordinates": {
+        "x": -191,
+        "y": 32
+      }
+    },
+    "ending": {
+      "resume_flow": true,
+      "coordinates": {
+        "x": 1917,
+        "y": 21
+      }
+    }
+  },
+  "flows": {
+    "#FLOW-1#": {
+      "name": "Passwordless Start",
+      "actions": [
+        {
+          "id": "http_request_baP0",
+          "alias": "passwordless-start",
+          "type": "HTTP",
+          "action": "SEND_REQUEST",
+          "allow_failure": false,
+          "mask_output": false,
+          "params": {
+            "method": "POST",
+            "url": "https://actions-gallery.au.auth0.com/passwordless/start",
+            "payload": {
+              "send": "code",
+              "email": "{{fields.secondary_email}}",
+              "client_id": "{{ vars.client_id }}",
+              "authParams": {
+                "scope": "openid profile email"
+              },
+              "connection": "email",
+              "client_secret": "{{ vars.client_secret }}"
+            },
+            "content_type": "JSON"
+          }
+        },
+        {
+          "id": "update_user_ecSE",
+          "alias": "story secondary email in app_metadata",
+          "type": "AUTH0",
+          "action": "UPDATE_USER",
+          "allow_failure": false,
+          "mask_output": false,
+          "params": {
+            "connection_id": "#CONN-1#",
+            "user_id": "{{context.user.user_id}}",
+            "changes": {
+              "app_metadata": {
+                "secondary_email": "{{fields.secondary_email}}"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "#FLOW-2#": {
+      "name": "Passwordless Verify",
+      "actions": [
+        {
+          "id": "http_request_eFjk",
+          "alias": "passwordless_verify",
+          "type": "HTTP",
+          "action": "SEND_REQUEST",
+          "allow_failure": false,
+          "mask_output": false,
+          "params": {
+            "method": "POST",
+            "url": "https://actions-gallery.au.auth0.com/oauth/token",
+            "payload": {
+              "otp": "{{functions.toString( fields.verification_code)}}",
+              "realm": "email",
+              "scope": "openid profile email",
+              "username": "{{fields.secondary_email}}",
+              "client_id": "{{ vars.client_id }}",
+              "grant_type": "http://auth0.com/oauth/grant-type/passwordless/otp",
+              "client_secret": "{{ vars.client_secret }}"
+            },
+            "content_type": "JSON"
+          }
+        },
+        {
+          "id": "if_then_condition_mnXT",
+          "alias": "Is it valid?",
+          "type": "FLOW",
+          "action": "BOOLEAN_CONDITION",
+          "allow_failure": false,
+          "mask_output": false,
+          "params": {
+            "if": {
+              "operands": [
+                {
+                  "operands": [
+                    "{{actions.http_request_eFjk.status}}",
+                    "200"
+                  ],
+                  "operator": "EQ"
+                }
+              ],
+              "operator": "AND"
+            },
+            "then": [
+              {
+                "id": "update_user_HlyR",
+                "type": "AUTH0",
+                "action": "UPDATE_USER",
+                "allow_failure": false,
+                "mask_output": false,
+                "params": {
+                  "connection_id": "#CONN-1#",
+                  "user_id": "{{context.user.user_id}}",
+                  "changes": {
+                    "app_metadata": {
+                      "secondary_email": "{{fields.secondary_email}}",
+                      "secondary_email_timestamp": "{{ functions.toTimestamp() }}",
+                      "secondary_email_verified": true
+                    }
+                  }
+                }
+              }
+            ],
+            "else": [
+              {
+                "id": "showErrorMessage_Whan",
+                "type": "FLOW",
+                "action": "ERROR_MESSAGE",
+                "allow_failure": false,
+                "mask_output": false,
+                "params": {
+                  "message": "We're sorry, your verification code is not valid. Please, review it and try it again."
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "connections": {
+    "#CONN-1#": {
+      "id": "ac_ssC2iuRKnyBziRf6MxXtRM",
+      "app_id": "AUTH0",
+      "name": "Validate-Secondary-Email-Phone"
+    }
+  }
+}
