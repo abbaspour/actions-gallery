@@ -62,19 +62,12 @@ exports.onExecutePostLogin = async (event, api) => {
     }
 
     if (MFA_REQUIRED_FOR_SECONDARY_CONTACT && canPromptMfa(event.user) && !hasDoneMfa(event)) {
-        api.access.deny('MFA required but not completed');
-        return;
+        console.log(`MFA before adding email contact:  ${JSON.stringify(event.user.enrolledFactors)}`);
+        api.authentication.challengeWithAny(event.user.enrolledFactors/*mapEnrolledToFactors(event.user)*/);
     } else {
         console.log('mfa not required before adding email contact.');
     }
 
-    // Render the privacy policy form
-    api.prompt.render(formId, {
-        vars: {
-            client_id: event.secrets.client_id,
-            client_secret: event.secrets.client_secret,
-        }
-    });
 };
 
 /**

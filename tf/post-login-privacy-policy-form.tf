@@ -39,7 +39,7 @@ resource "auth0_form" "privacy_policy" {
 
 # Create the action
 data "local_file" "render_privacy_policy_form_code" {
-  filename = "${path.module}/../post-login/forms/render-privacy-policy-form.js"
+  filename = "${path.module}/../post-login/forms-privacy-policy/render-privacy-policy-form.js"
 }
 
 resource "auth0_action" "render_privacy_policy_form-action" {

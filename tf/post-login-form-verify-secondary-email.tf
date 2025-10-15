@@ -86,6 +86,10 @@ data "local_file" "secondary_email_form_code" {
   filename = "${path.module}/../post-login/forms-secondary-email/render-secondary-email-form.js"
 }
 
+data "local_file" "secondary_email_mfa_code" {
+  filename = "${path.module}/../post-login/forms-secondary-email/render-secondary-email-mfa.js"
+}
+
 resource "auth0_action" "render_secondary_email_form-action" {
   name   = "render-secondary-email-form"
   code   = data.local_file.secondary_email_form_code.content
@@ -109,6 +113,23 @@ resource "auth0_action" "render_secondary_email_form-action" {
   secrets {
     name  = "client_secret"
     value = data.auth0_client.verify-pwdless-otp.client_secret
+  }
+
+}
+
+resource "auth0_action" "secondary_email_mfa-action" {
+  name   = "secondary-email-mfa"
+  code   = data.local_file.secondary_email_mfa_code.content
+  deploy = true
+
+  supported_triggers {
+    id      = "post-login"
+    version = "v3"
+  }
+
+  secrets {
+    name  = "SECONDARY_EMAIL_FORM_ID"
+    value = auth0_form.secondary_email.id
   }
 
 }
