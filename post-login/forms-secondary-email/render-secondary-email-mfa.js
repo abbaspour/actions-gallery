@@ -55,10 +55,10 @@ exports.onExecutePostLogin = async (event, api) => {
     }
 
     // Get form ID from secret
-    const formId = event.secrets.SECONDARY_EMAIL_FORM_ID;
+    const formId = event.secrets.SECONDARY_CONTACT_FORM_ID;
 
     if (!formId) {
-        return noop('SECONDARY_EMAIL_FORM_ID secret not configured');
+        return noop('SECONDARY_CONTACT_FORM_ID secret not configured');
     }
 
     if (MFA_REQUIRED_FOR_SECONDARY_CONTACT && canPromptMfa(event.user) && !hasDoneMfa(event)) {

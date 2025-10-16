@@ -55,10 +55,10 @@ exports.onExecutePostLogin = async (event, api) => {
     }
 
     // Get form ID from secret
-    const formId = event.secrets.SECONDARY_EMAIL_FORM_ID;
+    const formId = event.secrets.SECONDARY_CONTACT_FORM_ID;
 
     if (!formId) {
-        return noop('SECONDARY_EMAIL_FORM_ID secret not configured');
+        return noop('SECONDARY_CONTACT_FORM_ID secret not configured');
     }
 
     if (MFA_REQUIRED_FOR_SECONDARY_CONTACT && canPromptMfa(event.user) && !hasDoneMfa(event)) {
@@ -73,6 +73,8 @@ exports.onExecutePostLogin = async (event, api) => {
         vars: {
             client_id: event.secrets.client_id,
             client_secret: event.secrets.client_secret,
+            auth0_domain: event.secrets.auth0_domain,
+            flow_type: 'Email', // Phone
         }
     });
 };

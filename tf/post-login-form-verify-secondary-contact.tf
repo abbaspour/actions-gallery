@@ -1,16 +1,11 @@
 # Load the privacy policy form and its embedded flow from exported JSON
 locals {
-  secondary_email_otp_verification_form        = "${path.module}/../forms/secondary_email_otp_verification.json"
-  flow_secondary_email_otp_verification_start  = jsondecode(file(local.secondary_email_otp_verification_form))["flows"]["#FLOW-1#"]
-  flow_secondary_email_otp_verification_verify = jsondecode(file(local.secondary_email_otp_verification_form))["flows"]["#FLOW-2#"]
+  secondary_email_otp_verification_form        = "${path.module}/../forms/secondary-contact-verification.json"
+  flow_secondary_contact_otp_verification_start  = jsondecode(file(local.secondary_email_otp_verification_form))["flows"]["#FLOW-1#"]
+  flow_secondary_contact_otp_verification_verify = jsondecode(file(local.secondary_email_otp_verification_form))["flows"]["#FLOW-2#"]
   form_secondary_email_otp_verification        = jsondecode(file(local.secondary_email_otp_verification_form))["form"]
 }
 
-
-resource "auth0_connection" "passwordless-email" {
-  name     = "email"
-  strategy = "email"
-}
 
 resource "auth0_client" "verify-pwdless-otp" {
   name        = "verify-pwdless-otp"
@@ -22,6 +17,14 @@ resource "auth0_client" "verify-pwdless-otp" {
     "client_credentials", # to satisfy Auth0 VC
   ]
 }
+
+resource "auth0_connection_clients" "sms_verify_clients" {
+  connection_id   = data.auth0_connection.sms_connection.id
+  enabled_clients = [
+    auth0_client.verify-pwdless-otp.client_id
+  ]
+}
+
 
 resource "auth0_client_grant" "verify-pwdless-otp-cc" {
   audience     = data.auth0_resource_server.api_v2.identifier
@@ -50,23 +53,23 @@ resource "auth0_flow_vault_connection" "Validate-Secondary-EmailPhone" {
 
 
 resource "auth0_flow" "secondary_email_start" {
-  name = "Secondary Email Passwordless Start from TF"
+  name = "Secondary Contact Passwordless Start (TF)"
   actions = replace(
-    jsonencode(local.flow_secondary_email_otp_verification_start["actions"]),
+    jsonencode(local.flow_secondary_contact_otp_verification_start["actions"]),
     "#CONN-1#", auth0_flow_vault_connection.Validate-Secondary-EmailPhone.id
   )
 }
 
 resource "auth0_flow" "secondary_email_verify" {
-  name = "Secondary Email Passwordless Verify from TF"
+  name = "Secondary Contact Passwordless Verify (TF)"
   actions = replace(
-    jsonencode(local.flow_secondary_email_otp_verification_verify["actions"]),
+    jsonencode(local.flow_secondary_contact_otp_verification_verify["actions"]),
     "#CONN-1#", auth0_flow_vault_connection.Validate-Secondary-EmailPhone.id
   )
 }
 
 resource "auth0_form" "secondary_email" {
-  name = "Secondary Email From from TF"
+  name = "Secondary Contact From (TF)"
   languages {
     primary = "en"
   }
@@ -91,7 +94,7 @@ data "local_file" "secondary_email_mfa_code" {
 }
 
 resource "auth0_action" "render_secondary_email_form-action" {
-  name   = "render-secondary-email-form"
+  name   = "render-secondary-contact-form"
   code   = data.local_file.secondary_email_form_code.content
   deploy = true
 
@@ -101,7 +104,7 @@ resource "auth0_action" "render_secondary_email_form-action" {
   }
 
   secrets {
-    name  = "SECONDARY_EMAIL_FORM_ID"
+    name  = "SECONDARY_CONTACT_FORM_ID"
     value = auth0_form.secondary_email.id
   }
 
@@ -113,6 +116,11 @@ resource "auth0_action" "render_secondary_email_form-action" {
   secrets {
     name  = "client_secret"
     value = data.auth0_client.verify-pwdless-otp.client_secret
+  }
+
+  secrets {
+    name  = "auth0_domian"
+    value = var.auth0_domain
   }
 
 }
@@ -128,7 +136,7 @@ resource "auth0_action" "secondary_email_mfa-action" {
   }
 
   secrets {
-    name  = "SECONDARY_EMAIL_FORM_ID"
+    name  = "SECONDARY_CONTACT_FORM_ID"
     value = auth0_form.secondary_email.id
   }
 
