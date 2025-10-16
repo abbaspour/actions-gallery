@@ -42,16 +42,31 @@ exports.onExecutePostLogin = async (event, api) => {
 
     const {user} = event;
 
-    if (add_contact !== 'email') {
-        return noop('only add_contact type email is supported');
+    let add_contact_email;
+
+    switch (add_contact) {
+        case 'email': add_contact_email = true; break;
+        case 'phone': add_contact_email = false; break;
+        default:
+            return noop('only add_contact type email or phone is supported');
     }
 
-    // Check if user has already accepted privacy policies
-    const hasVerifiedSecondaryEmail = user.app_metadata?.secondary_email &&
-        user.app_metadata?.secondary_email_verified === true;
+    if (add_contact_email) {
+        // Check if user has already accepted privacy policies
+        const hasVerifiedSecondaryEmail = user.app_metadata?.secondary_email &&
+            user.app_metadata?.secondary_email_verified === true;
 
-    if (hasVerifiedSecondaryEmail) {
-        return noop('user already has a verified secondary email');
+        if (hasVerifiedSecondaryEmail) {
+            return noop('user already has a verified secondary email');
+        }
+    } else {
+        // Check if user has already accepted privacy policies
+        const hasVerifiedSecondaryPhone = user.app_metadata?.secondary_phone &&
+            user.app_metadata?.secondary_email_phone === true;
+
+        if (hasVerifiedSecondaryPhone) {
+            return noop('user already has a verified secondary phone');
+        }
     }
 
     // Get form ID from secret
@@ -74,7 +89,7 @@ exports.onExecutePostLogin = async (event, api) => {
             client_id: event.secrets.client_id,
             client_secret: event.secrets.client_secret,
             auth0_domain: event.secrets.auth0_domain,
-            flow_type: 'Email', // Phone
+            flow_type: add_contact_email ? 'Email' : 'Phone'
         }
     });
 };
