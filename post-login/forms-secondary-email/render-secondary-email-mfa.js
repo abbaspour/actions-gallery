@@ -42,31 +42,16 @@ exports.onExecutePostLogin = async (event, api) => {
 
     const {user} = event;
 
-    let add_contact_email;
-
-    switch (add_contact) {
-        case 'email': add_contact_email = true; break;
-        case 'phone': add_contact_email = false; break;
-        default:
-            return noop('only add_contact type email or phone is supported');
+    if (add_contact !== 'email') {
+        return noop('only add_contact type email is supported');
     }
 
-    if (add_contact_email) {
-        // Check if user has already accepted privacy policies
-        const hasVerifiedSecondaryEmail = user.app_metadata?.secondary_email &&
-            user.app_metadata?.secondary_email_verified === true;
+    // Check if user has already accepted privacy policies
+    const hasVerifiedSecondaryEmail = user.app_metadata?.secondary_email &&
+        user.app_metadata?.secondary_email_verified === true;
 
-        if (hasVerifiedSecondaryEmail) {
-            return noop('user already has a verified secondary email');
-        }
-    } else {
-        // Check if user has already accepted privacy policies
-        const hasVerifiedSecondaryPhone = user.app_metadata?.secondary_phone &&
-            user.app_metadata?.secondary_email_phone === true;
-
-        if (hasVerifiedSecondaryPhone) {
-            return noop('user already has a verified secondary phone');
-        }
+    if (hasVerifiedSecondaryEmail) {
+        return noop('user already has a verified secondary email');
     }
 
     // Get form ID from secret
@@ -77,21 +62,12 @@ exports.onExecutePostLogin = async (event, api) => {
     }
 
     if (MFA_REQUIRED_FOR_SECONDARY_CONTACT && canPromptMfa(event.user) && !hasDoneMfa(event)) {
-        api.access.deny('MFA required but not completed');
-        return;
+        console.log(`MFA before adding email contact:  ${JSON.stringify(event.user.enrolledFactors)}`);
+        api.authentication.challengeWithAny(event.user.enrolledFactors/*mapEnrolledToFactors(event.user)*/);
     } else {
         console.log('mfa not required before adding email contact.');
     }
 
-    // Render the privacy policy form
-    api.prompt.render(formId, {
-        vars: {
-            client_id: event.secrets.client_id,
-            client_secret: event.secrets.client_secret,
-            auth0_domain: event.secrets.auth0_domain,
-            flow_type: add_contact_email ? 'Email' : 'Phone'
-        }
-    });
 };
 
 /**

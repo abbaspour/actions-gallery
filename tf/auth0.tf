@@ -18,6 +18,26 @@ data "auth0_client" "Default-App" {
   name = "Default App"
 }
 
+resource "auth0_connection" "passwordless-email" {
+  name     = "email"
+  strategy = "email"
+}
+
+data "auth0_connection" "email_connection" {
+  name = "email"
+}
+
+
+resource "auth0_connection" "passwordless-sms" {
+  name     = "sms"
+  strategy = "sms"
+}
+
+data "auth0_connection" "sms_connection" {
+  name = "sms"
+}
+
+
 
 # Users DB
 resource "auth0_connection" "users" {

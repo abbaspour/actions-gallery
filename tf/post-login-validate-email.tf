@@ -23,10 +23,6 @@ data "auth0_client" "companion_app_email_validation" {
   client_id = auth0_client.companion_app_email_validation.client_id
 }
 
-data "auth0_connection" "email_connection" {
-  name = "email"
-}
-
 resource "auth0_connection_clients" "comp_app_email_verify_clients" {
   connection_id   = data.auth0_connection.email_connection.id
   enabled_clients = [
