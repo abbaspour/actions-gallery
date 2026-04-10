@@ -1,5 +1,5 @@
 resource "auth0_action" "switch-client-token-exchange" {
-  name    = "switch client token exchange"
+  name    = "switch client token exchange2"
   runtime = "node22"
   deploy  = true
   code = file("../custom-token-exchange/switch-client/switch-client.js")
@@ -22,8 +22,8 @@ resource "auth0_action" "switch-client-token-exchange" {
 }
 
 resource "auth0_token_exchange_profile" "my_token_exchange_profile" {
-  name               = "token-exchange-prof"
-  subject_token_type = "https://acme.com/cis-token"
+  name               = "token-exchange-prof2"
+  subject_token_type = "https://acme.com/cis-token2"
   action_id          = auth0_action.switch-client-token-exchange.id
   type               = "custom_authentication"
 }

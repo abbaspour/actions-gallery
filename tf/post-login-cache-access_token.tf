@@ -1,6 +1,6 @@
 resource "auth0_action" "cache-access_token" {
   name    = "cache access_token"
-  runtime = "node18"
+  runtime = "node22"
   deploy  = true
   code    = file("../post-login/cache-access_token/cache-access_token.js")
 

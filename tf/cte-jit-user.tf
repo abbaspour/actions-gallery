@@ -1,5 +1,5 @@
 resource "auth0_action" "jit-user-token-exchange" {
-  name    = "jit-user-token-exchange"
+  name    = "jit-user-token-exchange2"
   runtime = "node22"
   deploy  = true
   code = file("../custom-token-exchange/cte-jit-user/cte-jit-user.js")
@@ -17,8 +17,8 @@ resource "auth0_action" "jit-user-token-exchange" {
 }
 
 resource "auth0_token_exchange_profile" "jit-user_exchange_profile" {
-  name               = "jit-user-token-exchange-prof"
-  subject_token_type = "urn:jit:id-token"
+  name               = "jit-user-token-exchange-prof2"
+  subject_token_type = "urn:jit:id-token2"
   action_id          = auth0_action.jit-user-token-exchange.id
   type               = "custom_authentication"
 }

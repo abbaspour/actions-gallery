@@ -30,7 +30,7 @@ data "auth0_client" "account-linking-application" {
 
 resource "auth0_action" "interactive_account_linking" {
   name    = "Interactive Account Linking Nested Transaction"
-  runtime = "node18"
+  runtime = "node22"
   deploy  = true
   code = file("../post-login/account-linking/interactive-account-linking.js")
 

@@ -1,6 +1,6 @@
 resource "auth0_action" "block-jit-signup" {
   name    = "block-jit-signup"
-  runtime = "node18"
+  runtime = "node22"
   deploy  = true
   code    = file("../post-login/block-jit-signup/block-jit-signup.js")
 

@@ -18,7 +18,7 @@ resource "auth0_resource_server_scopes" "my-rs-scopes" {
 
 resource "auth0_action" "reset-scopes" {
   name    = "Reset requested scopes and populate with predefines scopes"
-  runtime = "node18"
+  runtime = "node22"
   deploy  = true
   code = file("../post-login/reset-scopes/reset-scopes.js")
 

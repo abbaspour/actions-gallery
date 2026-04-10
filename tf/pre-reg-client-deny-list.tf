@@ -1,6 +1,6 @@
 resource "auth0_action" "register_client_deny_list" {
   name    = "Deny list of clients for user registration"
-  runtime = "node18"
+  runtime = "node22"
   deploy  = true
   code    = file("../pre-registration/pre-reg-client-deny-list.js")
 

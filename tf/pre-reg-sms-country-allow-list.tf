@@ -1,6 +1,6 @@
 resource "auth0_action" "sms_country_allow_list" {
   name    = "Allow list of Countries for SMS Passwordless registration"
-  runtime = "node18"
+  runtime = "node22"
   deploy  = true
   code    = file("../pre-registration/pre-reg-sms-country-allow-list.js")
 

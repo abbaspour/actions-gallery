@@ -1,6 +1,6 @@
 resource "auth0_action" "register_deny_list" {
   name    = "Maintain a Deny list for allowed Domains to Register"
-  runtime = "node18"
+  runtime = "node22"
   deploy  = true
   code    = file("../pre-registration/pre-reg-domain-deny-list.js")
 

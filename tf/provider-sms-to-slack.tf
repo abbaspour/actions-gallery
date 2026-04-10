@@ -1,4 +1,4 @@
-
+/*
 resource "auth0_phone_provider" "custom_phone_provider" {
 
   name                 = "custom"
@@ -37,3 +37,4 @@ resource "auth0_action" "sms_to_slack" {
     value = var.slack_webhook_url
   }
 }
+*/
