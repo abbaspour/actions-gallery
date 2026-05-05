@@ -7,10 +7,12 @@ locals {
 }
 
 
+/*
 resource "auth0_connection" "passwordless-email" {
   name     = "email"
   strategy = "email"
 }
+*/
 
 resource "auth0_client" "verify-pwdless-otp" {
   name        = "verify-pwdless-otp"

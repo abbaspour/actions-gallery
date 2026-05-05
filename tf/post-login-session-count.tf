@@ -1,6 +1,6 @@
 resource "auth0_action" "session_count" {
   name    = "Count and limit session per user"
-  runtime = "node18"
+  runtime = "node22"
   deploy  = true
   code    = file("../post-login/session-count/limit-session-count.js")
 

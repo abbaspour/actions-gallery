@@ -4,7 +4,7 @@ data "local_file" "new_device_email_template" {
 
 resource "auth0_action" "new_device_login_notify_user" {
   name    = "Notify User by Email on New Device Login"
-  runtime = "node18"
+  runtime = "node22"
   deploy  = true
   code    = templatefile("../post-login/new-device-login-notify-user/send-email-on-new-device-login.js", {
     EMAIL_TEMPLATE = data.local_file.new_device_email_template.content

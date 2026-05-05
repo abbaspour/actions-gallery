@@ -1,6 +1,6 @@
 resource "auth0_action" "limit-org-to-domain" {
   name    = "Limit access to org to certains custom domain(s)"
-  runtime = "node18"
+  runtime = "node22"
   deploy  = true
   code = file("../post-login/multiple-custom-domains/limit-org-to-domain.js")
 

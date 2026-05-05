@@ -35,7 +35,7 @@ resource "auth0_connection_clients" "comp_app_email_verify_clients" {
 # action
 resource "auth0_action" "validate_email" {
   name    = "Interactive OTP Email Validation post login"
-  runtime = "node18"
+  runtime = "node22"
   deploy  = true
   code    = file("../post-login/validate-email/validate-email.js")
 

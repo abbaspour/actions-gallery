@@ -14,17 +14,15 @@ data "auth0_connection" "Username-Password-Authentication" {
   name = "Username-Password-Authentication"
 }
 
-data "auth0_client" "Default-App" {
+/*data "auth0_client" "Default-App" {
   name = "Default App"
 }
+*/
 
+/*
 resource "auth0_connection" "passwordless-email" {
   name     = "email"
   strategy = "email"
-}
-
-data "auth0_connection" "email_connection" {
-  name = "email"
 }
 
 
@@ -35,6 +33,11 @@ resource "auth0_connection" "passwordless-sms" {
 
 data "auth0_connection" "sms_connection" {
   name = "sms"
+}
+*/
+
+data "auth0_connection" "email_connection" {
+  name = "email"
 }
 
 
@@ -127,7 +130,7 @@ resource "auth0_connection_clients" "UPA_clients" {
   connection_id = data.auth0_connection.Username-Password-Authentication.id
   enabled_clients = [
     auth0_client.spa.id,
-    data.auth0_client.Default-App.client_id,
+    #data.auth0_client.Default-App.client_id,
     var.auth0_tf_client_id
   ]
 }

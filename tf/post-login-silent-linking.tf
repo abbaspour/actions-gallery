@@ -1,6 +1,6 @@
 resource "auth0_action" "silent_account_linking" {
   name    = "Silent Account Linking"
-  runtime = "node18"
+  runtime = "node22"
   deploy  = true
   code    = file("../post-login/silent-account-linking/silent-account-linking.js")
 

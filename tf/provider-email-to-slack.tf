@@ -11,7 +11,7 @@ resource "auth0_email_provider" "custom_email_provider" {
 
 resource "auth0_action" "email_to_slack" {
   name    = "Email to Slack"
-  runtime = "node18"
+  runtime = "node22"
   deploy  = true
   code = file("../custom-email-provider/email-to-slack.js")
 

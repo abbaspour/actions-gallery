@@ -1,5 +1,6 @@
 PLAN_FILE=actions-gallery.plan
 
+LOG_LEVEL='DEBUG' # DEBUG
 LOG_LEVEL='' # DEBUG
 TF=terraform
 

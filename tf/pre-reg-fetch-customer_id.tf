@@ -1,6 +1,6 @@
 resource "auth0_action" "crm_fetch_customer_id" {
   name    = "Fetch a customer_id from CRM"
-  runtime = "node18"
+  runtime = "node22"
   deploy  = true
   code    = file("../pre-registration/pre-reg-fetch-customer_id.js")
 

@@ -2,14 +2,24 @@ resource "auth0_trigger_actions" "post-login" {
   trigger = "post-login"
 
   actions {
+    id           = auth0_action.dump-context.id
+    display_name = auth0_action.dump-context.name
+  }
+
+  /*
+  actions {
     id           = auth0_action.secondary_email_mfa-action.id
     display_name = auth0_action.secondary_email_mfa-action.name
   }
+  */
 
+  /*
   actions {
     id           = auth0_action.render_secondary_email_form-action.id
     display_name = auth0_action.render_secondary_email_form-action.name
   }
+  */
+
   /*
   actions {
     id           = auth0_action.render_privacy_policy_form-action.id
