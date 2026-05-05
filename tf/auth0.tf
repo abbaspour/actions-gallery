@@ -99,6 +99,10 @@ resource "auth0_client" "spa" {
   }
 }
 
+output "jwt-io-client-id" {
+  value = auth0_client.spa.client_id
+}
+
 # Connection vs Clients
 resource "auth0_connection_clients" "users_clients" {
   connection_id = auth0_connection.users.id
