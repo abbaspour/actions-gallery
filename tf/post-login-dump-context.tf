@@ -9,8 +9,8 @@ resource "auth0_action" "dump-context" {
     version = "v3"
   }
 
-  dependencies {
-    name    = "actions:logger"
-    version = "1"
+  modules {
+    module_id             = auth0_action_module.logger.id
+    module_version_id     = data.auth0_action_module_versions.logger_module_versions.versions[0].id
   }
 }
