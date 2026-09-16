@@ -1,5 +1,6 @@
 resource "auth0_tenant" "tenant_config" {
   friendly_name = "Actions Gallery Demo"
+  default_redirection_uri = "https://jwt.io"
   flags {
     enable_client_connections = false
   }
