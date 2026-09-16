@@ -6,6 +6,11 @@ resource "auth0_trigger_actions" "post-login" {
     display_name = auth0_action.dump-context.name
   }
 
+  actions {
+    id           = auth0_action.render-kyc-action.id
+    display_name = auth0_action.render-kyc-action.name
+  }
+
   /*
   actions {
     id           = auth0_action.secondary_email_mfa-action.id
