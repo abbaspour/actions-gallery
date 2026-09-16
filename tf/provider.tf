@@ -2,15 +2,15 @@ terraform {
   required_providers {
     auth0 = {
       source  = "auth0/auth0"
-      version = "~> 1.43"
+      version = "~> 1.57"
     }
     local = {
       source = "hashicorp/local"
-      version = "~> 2.4"
+      version = "~> 2.9"
     }
     jq = {
       source  = "massdriver-cloud/jq"
-      version = "0.2.0"
+      version = "~> 0.2"
     }
   }
 }

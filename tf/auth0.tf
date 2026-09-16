@@ -1,5 +1,6 @@
 resource "auth0_tenant" "tenant_config" {
   friendly_name = "Actions Gallery Demo"
+  default_redirection_uri = "https://jwt.io"
   flags {
     enable_client_connections = false
   }
@@ -97,6 +98,10 @@ resource "auth0_client" "spa" {
   token_exchange {
     allow_any_profile_of_type = [auth0_token_exchange_profile.jit-user_exchange_profile.type]
   }
+}
+
+output "jwt-io-client-id" {
+  value = auth0_client.spa.client_id
 }
 
 # Connection vs Clients
