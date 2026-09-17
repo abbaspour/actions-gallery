@@ -76,18 +76,23 @@ resource "auth0_connection" "Email-OTP" {
           default_method = "email_otp"
         }
         signup {
+          status = "required"
           verification {
             active = true
           }
         }
       }
     }
+
     authentication_methods {
       email_otp {
         enabled = true
+
       }
       password {
         enabled = false
+        api_behavior = "optional"
+        signup_behavior = "block"
       }
       passkey {
         enabled = false

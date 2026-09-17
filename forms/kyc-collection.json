@@ -1,0 +1,132 @@
+{
+  "version": "4.0.0",
+  "form": {
+    "name": "Onboarding",
+    "languages": {
+      "primary": "en"
+    },
+    "nodes": [
+      {
+        "id": "step_e1Mc",
+        "type": "STEP",
+        "coordinates": {
+          "x": -29,
+          "y": -95
+        },
+        "config": {
+          "components": [
+            {
+              "id": "rich_text_uctu",
+              "category": "BLOCK",
+              "type": "RICH_TEXT",
+              "config": {
+                "content": "<h2>Help us verify your information</h2><p>We want to learn more about you.</p>"
+              }
+            },
+            {
+              "id": "first_name",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "First name",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiline": false
+              }
+            },
+            {
+              "id": "last_name",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "Last name",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiline": false
+              }
+            },
+            {
+              "id": "company_name",
+              "category": "FIELD",
+              "type": "TEXT",
+              "label": "Company Name",
+              "required": true,
+              "sensitive": false,
+              "config": {
+                "multiline": false,
+                "min_length": 1
+              }
+            },
+            {
+              "id": "next_button_RRfQ",
+              "category": "BLOCK",
+              "type": "NEXT_BUTTON",
+              "config": {
+                "text": "Continue"
+              }
+            }
+          ],
+          "next_node": "flow_Z4eS"
+        }
+      },
+      {
+        "id": "flow_Z4eS",
+        "type": "FLOW",
+        "coordinates": {
+          "x": 642,
+          "y": 155
+        },
+        "config": {
+          "flow_id": "#FLOW-1#",
+          "next_node": "$ending"
+        }
+      }
+    ],
+    "start": {
+      "next_node": "step_e1Mc",
+      "coordinates": {
+        "x": -336,
+        "y": 202
+      }
+    },
+    "ending": {
+      "resume_flow": true,
+      "coordinates": {
+        "x": 1112,
+        "y": 134
+      }
+    }
+  },
+  "flows": {
+    "#FLOW-1#": {
+      "name": "Update KYC details",
+      "actions": [
+        {
+          "id": "update_user_XQPS",
+          "type": "AUTH0",
+          "action": "UPDATE_USER",
+          "allow_failure": true,
+          "mask_output": false,
+          "params": {
+            "connection_id": "#CONN-1#",
+            "user_id": "{{context.user.user_id}}",
+            "changes": {
+              "user_metadata": {
+                "last_name": "{{fields.last_name}}",
+                "first_name": "{{fields.first_name}}",
+                "company_name": "{{fields.company_name}}"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "connections": {
+    "#CONN-1#": {
+      "id": "ac_pw6woHMVb8AT1p21q3xns3",
+      "app_id": "AUTH0",
+      "name": "post-login-privacy-policy-form-vc"
+    }
+  }
+}
