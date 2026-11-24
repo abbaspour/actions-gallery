@@ -102,6 +102,48 @@ resource "auth0_connection" "Email-OTP" {
 }
 
 
+resource "auth0_connection" "SMS-OTP" {
+  name     = "SMS-OTP"
+  strategy = "auth0"
+
+  options {
+    requires_username      = false
+    password_policy        = "low"
+    disable_signup         = false
+    brute_force_protection = true
+    disable_self_service_change_password = true
+
+    attributes {
+      phone_number {
+        identifier {
+          active = true
+          default_method = "phone_otp"
+        }
+        signup {
+          status = "required"
+          verification {
+            active = true
+          }
+        }
+      }
+    }
+
+    authentication_methods {
+      password {
+        enabled = false
+        api_behavior = "optional"
+        signup_behavior = "block"
+      }
+      passkey {
+        enabled = false
+      }
+      phone_otp {
+        enabled = true
+      }
+    }
+  }
+}
+
 resource "auth0_connection" "google-social" {
   name     = "google-oauth2"
   strategy = "google-oauth2"
@@ -146,6 +188,11 @@ resource "auth0_client" "spa" {
   }
 }
 
+output "jwt-io-client-id" {
+  value = auth0_client.spa.client_id
+}
+
+
 resource "auth0_client" "local" {
   name            = "local"
   description     = "Local SPA client"
@@ -165,8 +212,8 @@ resource "auth0_client" "local" {
   }
 }
 
-output "jwt-io-client-id" {
-  value = auth0_client.spa.client_id
+output "local-client-id" {
+  value = auth0_client.local.client_id
 }
 
 # Connection vs Clients
@@ -207,6 +254,13 @@ resource "auth0_connection_clients" "UPA_clients" {
 
 resource "auth0_connection_clients" "Email-OTP-clients" {
   connection_id = auth0_connection.Email-OTP.id
+  enabled_clients = [
+    auth0_client.local.client_id
+  ]
+}
+
+resource "auth0_connection_clients" "SMS-OTP-clients" {
+  connection_id = auth0_connection.SMS-OTP.id
   enabled_clients = [
     auth0_client.local.client_id
   ]
