@@ -4,15 +4,13 @@ resource "auth0_tenant" "tenant_config" {
   flags {
     enable_client_connections = false
   }
+  default_audience = auth0_resource_server.shop.identifier
+  resource_parameter_profile = "compatibility"
+  default_directory = "Users"
 }
 
 data "auth0_resource_server" "api_v2" {
   identifier = "https://${var.auth0_domain}/api/v2/"
-}
-
-# Username-Password-Authentication
-data "auth0_connection" "Username-Password-Authentication" {
-  name = "Username-Password-Authentication"
 }
 
 /*data "auth0_client" "Default-App" {
@@ -171,7 +169,8 @@ resource "auth0_client" "spa" {
   is_first_party  = true
 
   callbacks = [
-    "https://jwt.io"
+    "https://jwt.io",
+    "https://agent.abbaspour.net/callback"
   ]
 
   allowed_logout_urls = [
@@ -243,14 +242,14 @@ resource "auth0_connection_clients" "facebook_clients" {
   ]
 }
 
-resource "auth0_connection_clients" "UPA_clients" {
-  connection_id = data.auth0_connection.Username-Password-Authentication.id
-  enabled_clients = [
-    auth0_client.spa.id,
-    #data.auth0_client.Default-App.client_id,
-    var.auth0_tf_client_id
-  ]
-}
+# resource "auth0_connection_clients" "UPA_clients" {
+#   connection_id = data.auth0_connection.Username-Password-Authentication.id
+#   enabled_clients = [
+#     auth0_client.spa.id,
+#     #data.auth0_client.Default-App.client_id,
+#     var.auth0_tf_client_id
+#   ]
+# }
 
 resource "auth0_connection_clients" "Email-OTP-clients" {
   connection_id = auth0_connection.Email-OTP.id
