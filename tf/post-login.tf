@@ -37,4 +37,10 @@ resource "auth0_trigger_actions" "post-login" {
     display_name = auth0_action.typescript.name
   }
   */
+
+  # must stay last so it sees scopes set by other actions
+  actions {
+    id           = auth0_action.poppy-offline-access.id
+    display_name = auth0_action.poppy-offline-access.name
+  }
 }

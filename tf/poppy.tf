@@ -9,6 +9,7 @@
 resource "auth0_client_cimd" "poppy-agent" {
   external_client_id = "https://agent.abbaspour.net/cimd.json" # cf tunnel must be running. see poppy-bash/readme.md
 
+  #agent_id = auth0_agent.popp-agent.id
 }
 
 resource "auth0_resource_server" "shop" {
@@ -68,7 +69,7 @@ resource "auth0_client" "shop-rwa" {
   is_first_party  = true
 
   callbacks = [
-    "https://shop.abbaspour.net/cb"
+    "https://shop.abbaspour.net/auth/callback"
   ]
 
   allowed_logout_urls = [
@@ -77,6 +78,8 @@ resource "auth0_client" "shop-rwa" {
   jwt_configuration {
     alg = "RS256"
   }
+
+  initiate_login_uri = "https://shop.abbaspour.net/auth/login"
 
   agent_id = auth0_agent.popp-agent.id # missing in CIMD client
 
@@ -94,4 +97,17 @@ output "shop-browser-join-url" {
 resource "auth0_agent" "popp-agent" {
   name = "poppy-agent"
 
+}
+
+# adds offline_access to agent sign-ins to poppy APIs. must be bound last in post-login flow (see post-login.tf)
+resource "auth0_action" "poppy-offline-access" {
+  name    = "Poppy: add offline_access for agents"
+  runtime = "node22"
+  deploy  = true
+  code    = file("${path.module}/../post-login/poppy/poppy-offline-access.js")
+
+  supported_triggers {
+    id      = "post-login"
+    version = "v3"
+  }
 }

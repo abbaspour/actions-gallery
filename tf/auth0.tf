@@ -185,6 +185,9 @@ resource "auth0_client" "spa" {
   token_exchange {
     allow_any_profile_of_type = [auth0_token_exchange_profile.jit-user_exchange_profile.type]
   }
+
+  addons {
+  }
 }
 
 output "jwt-io-client-id" {
@@ -222,7 +225,8 @@ resource "auth0_connection_clients" "users_clients" {
     auth0_client.spa.id,
     var.auth0_tf_client_id,
     auth0_client.account-linking-application.id,
-    auth0_client.account_linking_companion_app.id
+    auth0_client.account_linking_companion_app.id,
+    auth0_client.shop-rwa.id
   ]
 }
 
