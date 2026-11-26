@@ -7,6 +7,6 @@
 exports.onExecutePostIdentifier = async (event, api) => {
     console.log(`onExecutePostIdentifier event: ${JSON.stringify(event)}`);
 
-    api.authentication.setConnectionByName('Users');
-    api.authentication.setConnectionByName('Username-Password-Authentication');
+    //api.authentication.setConnectionByName('Users');
+    //api.authentication.setConnectionByName('Username-Password-Authentication');
 };
